@@ -1,4 +1,4 @@
-# [Lamis Plus Frontend](git@github.com:alexalozie/base-ui.git)
+# [lamisplus UI](git@github.com:alexalozie/base-ui.git)
 
 
 
