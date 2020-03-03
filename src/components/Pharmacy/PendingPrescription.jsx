@@ -7,7 +7,8 @@ import {
   Row,
   Alert,
 } from 'reactstrap';
-import { makeStyles } from '@material-ui/core/styles';
+import { useState, useEffect } from 'react';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { TiWarningOutline } from "react-icons/ti";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -20,36 +21,64 @@ import Typography from '@material-ui/core/Typography';
 import {
     GiMedicines
 } from 'react-icons/gi';
+import TablePagination from '@material-ui/core/TablePagination';  
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import {url} from 'axios/url';
 import SearchTestOrder from 'components/Laboratory/SearchForm/SearchTestOrder';
 
-const useStyles = makeStyles(theme => ({
-  table: {
-    minWidth: 650,
+const useStyles = makeStyles({  
+  root: {  
+    width: '100%',  
+  },  
+  container: {  
+    maxHeight: 440,  
+  }, 
+});  
+const StyledTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
   },
-  button: {
-    margin: theme.spacing(1),
-    width:200,
+  body: {
+    fontSize: 11,
   },
-  body1: {
-    fontWeight: 500,
+}))(TableCell);
+const StyledTableRow = withStyles(theme => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.background.default,
+    },
   },
-
-}));
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('1598', 'Alex Williams', 234567677, 3),
-  createData('1234', 'Ahmed Musa', +23456666443, 9),
-  createData('5555', 'Isaac Johnson',+2345567765, 6 ),
-];
+}))(TableRow);
 
 const PendingPrescription = (props) => {
- 
-    const classes = useStyles();
+  const classes = useStyles();  
+  const [page, setPage] = React.useState(0);  
+  const [data, setData] = useState([]);   
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);  
+  const apistate = url+"patients";
+      useEffect(() => {    
+        const GetData = async () => {    
+          const result = await axios(apistate);    
+          setData(result.data);  
+          console.log(result.data);   
+        }  
+        GetData();     
+
+}, []);   
+
+  const handleChangePage = (event, newPage) => {  
+
+    setPage(newPage);  
+
+  };  
+
+  const handleChangeRowsPerPage = event => {  
+    setRowsPerPage(+event.target.value);  
+    setPage(0);  
+  };  
+
   return (
     <Page title="Pending Prescription" >     
         <Row>        
@@ -74,16 +103,18 @@ const PendingPrescription = (props) => {
                         <Table className={classes.table} aria-label="caption table">
                         <TableHead>
                             <TableRow>
-                            <TableCell>Patient ID</TableCell>
-                            <TableCell align="center">Patient Name</TableCell>
-                            <TableCell align="center">Phone Number</TableCell>
-                            <TableCell align="center">Total</TableCell>
-                            <TableCell align="center">Action</TableCell>
+                            <StyledTableCell>Patient ID</StyledTableCell>
+                            <StyledTableCell align="center">Patient Name</StyledTableCell>
+                            <StyledTableCell align="center">Phone Number</StyledTableCell>
+                            <StyledTableCell align="center">Total</StyledTableCell>
+                            <StyledTableCell align="center">Action</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map(row => (
-                                <TableRow key={row.name}>
+                        {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {  
+                          return (  
+
+                                <StyledTableRow key={row.name}>
                                 <TableCell component="th" scope="row">
                                     {row.name}
                                 </TableCell>
@@ -97,11 +128,32 @@ const PendingPrescription = (props) => {
                                             <Link to="/view-prescription"> View Prescription</Link>
                                         </Typography>                                    
                                 </TableCell>
-                                </TableRow>
-                            ))}
+                                </StyledTableRow>
+                            );  
+
+                          })}  
                         </TableBody>
                         </Table>
-                    </TableContainer>       
+                    </TableContainer>  
+
+                    <TablePagination  
+
+        rowsPerPageOptions={[5, 10, 15]}  
+
+        component="div"  
+
+        count={data.length}  
+
+        rowsPerPage={rowsPerPage}  
+
+        page={page}  
+
+        onChangePage={handleChangePage}  
+
+        onChangeRowsPerPage={handleChangeRowsPerPage}  
+
+      />  
+     
                   </Card>
                 </Col>
                 

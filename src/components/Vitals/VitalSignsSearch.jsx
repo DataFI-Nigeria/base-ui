@@ -186,7 +186,7 @@ export default function VitalsSigns(props) {
                            <AddVitalsPage patient={patientrow}/>
                         </ModalBody>
                     </Modal>
-                    <Modal isOpen={modal2} toggle={toggle2} size='lg'>
+                    <Modal isOpen={modal2} toggle={toggle2} >
                         <ModalHeader toggle={toggle2}>Assign Clinician</ModalHeader>
                         <ModalBody>
                                 <AssignClinician patientdetail={patientrow}/>

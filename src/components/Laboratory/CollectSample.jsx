@@ -4,12 +4,11 @@ import {
   CardBody,
   CardHeader,
   Col,
-  Form,
   Row,
-  FormGroup,
-  Button,
-  Input
+  Button, Modal, ModalHeader, ModalBody, ModalFooter,
+  Form, FormGroup, Label, Input 
 } from 'reactstrap';
+import { useState} from 'react';
 import { MdSave, MdTransferWithinAStation} from 'react-icons/md';
 import { FaVials } from 'react-icons/fa';
 import {TiArrowBack} from 'react-icons/ti';
@@ -19,31 +18,38 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+
+import Table from '@material-ui/core/Table';  
+
+import TableBody from '@material-ui/core/TableBody';  
+import axios from 'axios';
+import TableCell from '@material-ui/core/TableCell';  
+import 'react-widgets/dist/css/react-widgets.css';
+//Date Picker
+import { DateTimePicker } from 'react-widgets';
+import Moment from 'moment';
+import momentLocalizer from 'react-widgets-moment';
+ import moment from 'moment';
+import TableContainer from '@material-ui/core/TableContainer';  
+import TableRow from '@material-ui/core/TableRow'; 
+import TableHead from '@material-ui/core/TableHead';   
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import IconButton from '@material-ui/core/IconButton';
 import DateMaterial from 'components/DateTime/Date'
 import Page from 'components/Page';
+import {url} from 'axios/url';
+import Spinner from 'react-bootstrap/Spinner';
+
+Moment.locale('en');
+momentLocalizer();
 
 
-
-const useStyles = makeStyles(theme => ({
-    table: {
-      minWidth: 650,
-    },
-    button: {
-      margin: theme.spacing(1),
-      width:200,
-    },
-  }));
   const useStyles2 = makeStyles(theme => ({
     inforoot: {
       width: '100%',
@@ -81,24 +87,102 @@ const useStyles = makeStyles(theme => ({
       },
     },
   }));
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
-  
-  const rows = [
-    createData('Blood', 'Blood', 6.0, 24, 4.0),
-    createData('HIV', 'Urine', 9.0, 37, 4.3),
-    createData('TB', 'Blood', 16.0, 24, 6.0),
-  ];
+  const useStyles = makeStyles({  
+    root: {  
+      width: '100%',  
+    },  
+    container: {  
+      maxHeight: 440,  
+    }, 
+  });  
+  const StyledTableCell = withStyles(theme => ({
+    head: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white,
+    },
+    body: {
+      fontSize: 11,
+    },
+  }))(TableCell);
+  const StyledTableRow = withStyles(theme => ({
+    root: {
+      '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.background.default,
+      },
+    },
+  }))(TableRow);
 
+export default function CollectSample(props){
   
-
-export default function CollectSample(){
     const classes = useStyles();
     const classes2 = useStyles2();
+    const apiUrl = url+"encounters/laboratory/collect/labtest/sample";
+    const data = [props.location.state.getpatientlists.row];
+    const [showLoading, setShowLoading] = useState(false);
+    // const [datas, setdatas]= useState(data)
+    //console.log(data);
+
+  /* For modal popup */
+  const {
+    className
+  } = props;
+
+  const [modal, setModal] = useState(false);
+  const [modal3, setModal3] = useState(false);
+
+  const toggle = () => setModal(!modal);
+  const toggle3 = () => setModal3(!modal3);
+  const [encounterid, setencounterid] = useState('');
+  //const [patientrow, setpatientValue] = useState({date_sample_collected:new Date(), sample_collected:''});
+  const [patientrow, setpatientValue] = useState({
+                                                    date_sample_collected:new Date(),
+                                                    lab_testid: '1',
+                                                    description: "",
+                                                    sample_type: "",
+                                                    test_result: 0,
+                                                    sample_referred: "",
+                                                    sample_collected: "",
+                                                    unit_measurement: "",
+                                                    date_result_reported: "",
+
+                                                  })
+const newDate = moment(patientrow.date_sample_collected).format('DD-MM-YYYY');
+
+
+const getUsermodal = (usercollection)=> {
+// setuservalue(user);
+//console.log(usercollection);
+setencounterid(usercollection.encounterId);
+setpatientValue({...patientrow})
+setModal3(!modal3);
+
+}
+const saveDateofSample = (e) => {
+  //toast.warn("Processing Registration");
+  setpatientValue({...patientrow, date_sample_collected: newDate});
+  setShowLoading(true);
+  e.preventDefault();
+  const data = { 
+              Id: encounterid,
+              formData: patientrow
+    };
+console.log(data);
+
+  axios.put(apiUrl, data)
+    .then((result) => {          
+      setShowLoading(false);
+      props.history.push('/patients')
+      toast.success("Patient Registration Successful!");
+    }).catch((error) => {
+    setShowLoading(false)
+    console.log(usercollection);
+    }
+    );
+};
 
   return (
     <Page title="Collect Sample">
+      <ToastContainer autoClose={2000} />
         <Row >
           <Col>
           <div className={classes2.inforoot} >
@@ -110,14 +194,14 @@ export default function CollectSample(){
                 >
                 <div className={classes2.column}>
                     <Typography className={classes.heading}>
-                        Name: Alex Willaims Adeoye
+                        Name: {data[0].firstName} {' '} {data[0].lastName} 
                         <br/>
                         Gender: Female
                     </Typography>
                 </div>
                 <div className={classes2.column}>
                     <Typography className={classes2.heading}>
-                        DOB: June, 14 1990 (20 years)
+                        DOB: {data[0].dob} 
                         <br/>
                         Phone Number : +234567890
                     </Typography>
@@ -134,7 +218,7 @@ export default function CollectSample(){
             </div>
             <br/>
             <Card className="mb-12">
-              <CardHeader className="text-primary">Test Order  --  03846657558
+              <CardHeader className="text-primary">Test Order  --  {data[0].formData.labtest[0].description} -  {data[0].formData.labtest[0].lab_testid}
               <Link to="/test-order">
                 <Button color="primary" className=" float-right mr-1" >
                         <TiArrowBack/>Go Back
@@ -151,22 +235,22 @@ export default function CollectSample(){
                                     <Table className={classes.table} aria-label="caption table">
                                     <TableHead style={{fontWeight: "bolder" }}>
                                         <TableRow>
-                                        <TableCell align="center">Test</TableCell>
-                                        <TableCell align="center">Sample Type</TableCell>
-                                        <TableCell align="center">Date Requested</TableCell>
-                                        <TableCell align="center">Collected</TableCell>
-                                        <TableCell align="center">Refered</TableCell>
-                                        <TableCell align="center">Actions</TableCell>
+                                        <StyledTableCell align="center">Test</StyledTableCell>
+                                        <StyledTableCell align="center">Sample Type</StyledTableCell>
+                                        <StyledTableCell align="center">Date Requested</StyledTableCell>
+                                        <StyledTableCell align="center">Collected</StyledTableCell>
+                                        <StyledTableCell align="center">Refered</StyledTableCell>
+                                        <StyledTableCell align="center">Actions</StyledTableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {rows.map(row => (
-                                            <TableRow key={row.name}>
+                                    {data.map(row => (
+                                            <StyledTableRow key={row.encounterId}>
                                             <TableCell component="th" scope="row">
-                                                {row.name}
+                                            {row.encounterId}
                                             </TableCell>
-                                            <TableCell align="center">{row.calories}</TableCell>
-                                            <TableCell align="center">12/34/2019</TableCell>
+                                            <TableCell align="center">{row.formData.labtest[0].sample_type}</TableCell>
+                                            <TableCell align="center">{row.dateEncounter}</TableCell>
                                             <TableCell align="center">  
                                               <IoIosCheckmarkCircle className="text-primary"/>
                                             </TableCell>
@@ -175,22 +259,26 @@ export default function CollectSample(){
                                             </TableCell>
                                             <TableCell align="center">
                                               <Tooltip title="Collect Sample">
-                                                  <IconButton aria-label="Collect Sample">
+                                                  <IconButton aria-label="Collect Sample" onClick={() => {
+                                                    getUsermodal(row);
+
+                                                    }} >
                                                     <FaVials size='25'/>
                                                   </IconButton>
                                               </Tooltip>
                                               <Tooltip title="Refer">
-                                                  <IconButton aria-label="Refer">
+                                                  <IconButton aria-label="Refer" onClick={toggle}>
                                                     <MdTransferWithinAStation size="25"/>
                                                   </IconButton>
                                               </Tooltip>
                                             </TableCell>
                                             
-                                            </TableRow>
-                                        ))}
+                                            </StyledTableRow>
+                                       ))}
                                     </TableBody>
                                     </Table>
                                 </TableContainer>
+                                
                             </Card>
                           </Col>
                         </Row>
@@ -223,6 +311,83 @@ export default function CollectSample(){
                     </Card>
                   </Col>
                 </Row>
+                 {/* Modal to cancel new test result  */} 
+                 <Modal isOpen={modal3} toggle={toggle3} className={className} size='sm'>
+                 <Form onSubmit={saveDateofSample}>
+                    <ModalHeader toggle={toggle3}>Collect Sample </ModalHeader>
+                    <ModalBody>
+                       
+                        
+                        <Row form>
+                            <Col md={12}>
+                            <FormGroup>
+                                <Label for="exampleEmail">Date Sample Collected</Label>
+                                <DateTimePicker time={false} name="date_sample_collected"  dropDown onChange={value1 => setpatientValue({...patientrow, date_sample_collected: value1})} />
+
+                            </FormGroup>
+                            </Col>
+                            
+                        </Row>       
+                        
+                    </ModalBody>
+                    <ModalFooter>
+                    <Row>
+                            <Col md={12}>
+                            {showLoading && 
+                                
+                                <Spinner animation="border" role="status">
+                                <span className="sr-only">Loading...</span>
+                                </Spinner> 
+                            } 
+                            </Col> 
+                            </Row>
+                    <Button color="primary" type="submit">Save</Button>{' '}
+                    <Button color="secondary" onClick={toggle3}>Cancel</Button>
+                    </ModalFooter>
+                    </Form>
+                </Modal>
+
+             
+             {/* End of each Modal popup for each action */}  
+
+             {/* Modal to cancel new test result  */} 
+             <Modal isOpen={modal} toggle={toggle} className={className} size='sm'>
+                 <Form onSubmit={saveDateofSample}>
+                    <ModalHeader toggle={toggle3}>Transfer Test Order</ModalHeader>
+                    <ModalBody>
+                       
+                        
+                        <Row form>
+                            <Col md={12}>
+                            <FormGroup>
+                                <Label for="exampleEmail">Date Sample Collected</Label>
+                                
+                                <Input type="text" name="referer" id="referer" placeholder="Enter the Transfer Name" value={patientrow.referer} onChange={value1 => setpatientValue({...patientrow, referer: value1})} />
+                            </FormGroup>
+                            </Col>
+                            
+                        </Row>       
+                        
+                    </ModalBody>
+                    <ModalFooter>
+                    <Row>
+                            <Col md={12}>
+                            {showLoading && 
+                                
+                                <Spinner animation="border" role="status">
+                                <span className="sr-only">Loading...</span>
+                                </Spinner> 
+                            } 
+                            </Col> 
+                            </Row>
+                    <Button color="primary" type="submit">Save</Button>{' '}
+                    <Button color="secondary" onClick={toggle}>Cancel</Button>
+                    </ModalFooter>
+                    </Form>
+                </Modal>
+
+             
+             {/* End of each Modal popup for each action */}  
     </Page>
   )
 }

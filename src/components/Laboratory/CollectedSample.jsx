@@ -7,7 +7,8 @@ import {
   Row,
   Alert,
 } from 'reactstrap';
-import { makeStyles } from '@material-ui/core/styles';
+import { useState, useEffect } from 'react';
+import { makeStyles, withStyles } from '@material-ui/core/styles'; 
 import { TiWarningOutline } from "react-icons/ti";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -20,36 +21,65 @@ import { FaEye,FaPrint} from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-
+import TablePagination from '@material-ui/core/TablePagination';  
 import ResultSearch from 'components/Laboratory/SearchForm/ResultSearch';
 
-const useStyles = makeStyles(theme => ({
-  table: {
-    minWidth: 650,
-  },
-  button: {
-    margin: theme.spacing(1),
-    width:200,
-  },
-  body1: {
-    fontWeight: 500,
-  },
+import axios from 'axios';
+import {url} from 'axios/url';
+  
 
-}));
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('1598', 'Alex Williams', 234567677, 3),
-  createData('1234', 'Ahmed Musa', +23456666443, 9),
-  createData('5555', 'Isaac Johnson',+2345567765, 6 ),
-];
+const useStyles = makeStyles({  
+  root: {  
+    width: '100%',  
+  },  
+  container: {  
+    maxHeight: 440,  
+  }, 
+});  
+const StyledTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 11,
+  },
+}))(TableCell);
+const StyledTableRow = withStyles(theme => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.background.default,
+    },
+  },
+}))(TableRow);
 
 const CheckInPage = (props) => {
- 
-    const classes = useStyles();
+  const classes = useStyles();  
+  const [page, setPage] = React.useState(0);  
+  const [data, setData] = useState([]);   
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);  
+  const apistate = url+"patients";
+      useEffect(() => {    
+        const GetData = async () => {    
+          const result = await axios(apistate);    
+          setData(result.data);  
+          console.log(result.data);   
+        }  
+        GetData();     
+
+}, []);   
+
+  const handleChangePage = (event, newPage) => {  
+
+    setPage(newPage);  
+
+  };  
+
+  const handleChangeRowsPerPage = event => {  
+    setRowsPerPage(+event.target.value);  
+    setPage(0);  
+  };  
+
   return (
     <Page title="Collected Sample" >     
         <Row>        
@@ -74,19 +104,21 @@ const CheckInPage = (props) => {
                         <TableContainer component={Paper}>                
                             <Table className={classes.table} aria-label="caption table">
                             <TableHead>
+                              
                                 <TableRow>
-                                <TableCell>Lab Number</TableCell>
-                                <TableCell align="center">Patient ID</TableCell>
-                                <TableCell align="center">Phone Name</TableCell>
-                                <TableCell align="center">Date Collected</TableCell>
-                                <TableCell align="center">Sample </TableCell>
-                                <TableCell align="center">Result</TableCell>
-                                <TableCell align="center">Action</TableCell>
+                                <StyledTableCell>Lab Number</StyledTableCell>
+                                <StyledTableCell align="center">Patient ID</StyledTableCell>
+                                <StyledTableCell align="center">Phone Name</StyledTableCell>
+                                <StyledTableCell align="center">Date Collected</StyledTableCell>
+                                <StyledTableCell align="center">Sample </StyledTableCell>
+                                <StyledTableCell align="center">Result</StyledTableCell>
+                                <StyledTableCell align="center">Action</StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {rows.map(row => (
-                                    <TableRow key={row.name}>
+                            {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {  
+                                return ( 
+                                    <StyledTableRow key={row.name}>
                                     <TableCell component="th" scope="row">
                                         {row.name}
                                     </TableCell>
@@ -111,11 +143,31 @@ const CheckInPage = (props) => {
                                             </Tooltip>
                                         </Link>
                                     </TableCell>
-                                    </TableRow>
-                                ))}
+                                    </StyledTableRow>
+                                 );  
+
+                                })}  
+                    
                             </TableBody>
                             </Table>
-                        </TableContainer>  
+                        </TableContainer> 
+                        <TablePagination  
+
+                              rowsPerPageOptions={[5, 10, 15]}  
+
+                              component="div"  
+
+                              count={data.length}  
+
+                              rowsPerPage={rowsPerPage}  
+
+                              page={page}  
+
+                              onChangePage={handleChangePage}  
+
+                              onChangeRowsPerPage={handleChangeRowsPerPage}  
+
+                            />   
                   </Card>
                 </Col>
                 
