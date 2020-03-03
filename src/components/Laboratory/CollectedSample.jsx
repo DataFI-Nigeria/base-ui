@@ -80,6 +80,13 @@ const CheckInPage = (props) => {
     setPage(0);  
   };  
 
+  // const onsavesample = e => {
+  //   //  e.preventDefault();
+  //   setRelative({...relative, [e.target.name]: e.target.value});
+   
+  //   }
+
+
   return (
     <Page title="Collected Sample" >     
         <Row>        

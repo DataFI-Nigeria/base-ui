@@ -41,7 +41,6 @@ import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import IconButton from '@material-ui/core/IconButton';
-import DateMaterial from 'components/DateTime/Date'
 import Page from 'components/Page';
 import {url} from 'axios/url';
 import Spinner from 'react-bootstrap/Spinner';
@@ -116,7 +115,7 @@ export default function CollectSample(props){
   
     const classes = useStyles();
     const classes2 = useStyles2();
-    const apiUrl = url+"encounters/laboratory/collect/labtest/sample";
+    const apiUrl = url+"encounters/";
     const data = [props.location.state.getpatientlists.row];
     const [showLoading, setShowLoading] = useState(false);
     // const [datas, setdatas]= useState(data)
@@ -133,9 +132,11 @@ export default function CollectSample(props){
   const toggle = () => setModal(!modal);
   const toggle3 = () => setModal3(!modal3);
   const [encounterid, setencounterid] = useState('');
+  const [labNum, setlabNum] = useState(['']);
   //const [patientrow, setpatientValue] = useState({date_sample_collected:new Date(), sample_collected:''});
+  const TodayDate = moment(new Date()).format('DD-MM-YYYY');
   const [patientrow, setpatientValue] = useState({
-                                                    date_sample_collected:new Date(),
+                                                    date_sample_collected:TodayDate,
                                                     lab_testid: '1',
                                                     description: "",
                                                     sample_type: "",
@@ -146,40 +147,62 @@ export default function CollectSample(props){
                                                     date_result_reported: "",
 
                                                   })
-const newDate = moment(patientrow.date_sample_collected).format('DD-MM-YYYY');
+//const newDate = moment(patientrow.date_sample_collected).format('DD-MM-YYYY');
 
 
 const getUsermodal = (usercollection)=> {
 // setuservalue(user);
-//console.log(usercollection);
+console.log(usercollection);
 setencounterid(usercollection.encounterId);
-setpatientValue({...patientrow})
+setpatientValue(usercollection.formData)
 setModal3(!modal3);
 
 }
 const saveDateofSample = (e) => {
   //toast.warn("Processing Registration");
-  setpatientValue({...patientrow, date_sample_collected: newDate});
+  //setpatientValue({...patientrow, date_sample_collected: newDate});
   setShowLoading(true);
   e.preventDefault();
-  const data = { 
-              Id: encounterid,
-              formData: patientrow
-    };
-console.log(data);
-
-  axios.put(apiUrl, data)
+  const datapost = {  formData: data,
+                      lab_number:labNum.lab_number
+                  };
+    console.log(datapost);
+  const newapiurl = apiUrl+encounterid;
+  axios.put(newapiurl, datapost)
     .then((result) => {          
       setShowLoading(false);
       props.history.push('/patients')
       toast.success("Patient Registration Successful!");
     }).catch((error) => {
     setShowLoading(false)
-    console.log(usercollection);
+   
     }
     );
 };
-
+const saveColllectSample = (e) => {
+  //toast.warn("Processing Registration");
+  //setpatientValue({...patientrow, date_sample_collected: newDate});
+  setShowLoading(true);
+  e.preventDefault();
+  const data = {  formData: patientrow };
+    console.log(data);
+  const newapiurl = apiUrl+encounterid;
+  axios.put(newapiurl, data)
+    .then((result) => {          
+      setShowLoading(false);
+      props.history.push('/patients')
+      toast.success("Patient Registration Successful!");
+    }).catch((error) => {
+    setShowLoading(false)
+   
+    }
+    );
+};
+const onChangeLabnum = e => {
+  //  e.preventDefault();
+  setlabNum({...labNum, [e.target.name]: e.target.value});
+ 
+  }
   return (
     <Page title="Collect Sample">
       <ToastContainer autoClose={2000} />
@@ -194,31 +217,26 @@ console.log(data);
                 >
                 <div className={classes2.column}>
                     <Typography className={classes.heading}>
-                        Name: {data[0].firstName} {' '} {data[0].lastName} 
+                        Name:  {data[0].firstName} {' '} {data[0].lastName}
                         <br/>
                         Gender: Female
                     </Typography>
                 </div>
                 <div className={classes2.column}>
                     <Typography className={classes2.heading}>
-                        DOB: {data[0].dob} 
+                        DOB:  {data[0].dob}
                         <br/>
                         Phone Number : +234567890
                     </Typography>
                 </div>
-                <div className={classes2.column}>
-                    <Typography className={classes2.heading}>
-                        Email: Alext@gmail.com
-                        
-                    </Typography>
-                </div>
+                
                 </ExpansionPanelSummary>
                
             </ExpansionPanel>
             </div>
             <br/>
             <Card className="mb-12">
-              <CardHeader className="text-primary">Test Order  --  {data[0].formData.labtest[0].description} -  {data[0].formData.labtest[0].lab_testid}
+              <CardHeader className="text-primary">Test Order  --  
               <Link to="/test-order">
                 <Button color="primary" className=" float-right mr-1" >
                         <TiArrowBack/>Go Back
@@ -249,7 +267,7 @@ console.log(data);
                                             <TableCell component="th" scope="row">
                                             {row.encounterId}
                                             </TableCell>
-                                            <TableCell align="center">{row.formData.labtest[0].sample_type}</TableCell>
+                                            <TableCell align="center"></TableCell>
                                             <TableCell align="center">{row.dateEncounter}</TableCell>
                                             <TableCell align="center">  
                                               <IoIosCheckmarkCircle className="text-primary"/>
@@ -282,21 +300,21 @@ console.log(data);
                             </Card>
                           </Col>
                         </Row>
-                            <Form>
+                        <Form  onSubmit={saveColllectSample}>
                             <Row form >
                                 <Col md={4} style={{ marginTop: '33px'}}>
                                         <Input
                                             type="search"
                                             placeholder="Lab. Number "
                                             className="cr-search-form__input "
+                                            name="lab_number"
+                                            id="lab_number"
+                                            value={labNum.lab_number} 
+                                            onChangeLabnum={onChangeLabnum}
+                                             
                                         />                                
                                 </Col>
-                                <Col md={4}>
-                                    <FormGroup>
-
-                                        <DateMaterial />
-                                    </FormGroup>
-                                </Col>
+                                
                                 
                                 <Col md={2} style={{ marginTop: '33px'}}>
                                 <FormGroup>
@@ -322,7 +340,7 @@ console.log(data);
                             <Col md={12}>
                             <FormGroup>
                                 <Label for="exampleEmail">Date Sample Collected</Label>
-                                <DateTimePicker time={false} name="date_sample_collected"  dropDown onChange={value1 => setpatientValue({...patientrow, date_sample_collected: value1})} />
+                                <DateTimePicker time={false} name="date_sample_collected"  dropDown  />
 
                             </FormGroup>
                             </Col>
@@ -353,7 +371,7 @@ console.log(data);
              {/* Modal to cancel new test result  */} 
              <Modal isOpen={modal} toggle={toggle} className={className} size='sm'>
                  <Form onSubmit={saveDateofSample}>
-                    <ModalHeader toggle={toggle3}>Transfer Test Order</ModalHeader>
+                    <ModalHeader toggle={toggle}>Transfer Test Order</ModalHeader>
                     <ModalBody>
                        
                         
