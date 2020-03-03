@@ -8,7 +8,8 @@ import {
     FormGroup,
     Label,
     Input,
-    Form
+    Form,
+    Alert,
 } from 'reactstrap';
 import MatButton from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -144,56 +145,27 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function Medication(props) {
-    const apicountries = url+"encounters/pharmacy/drugs";
-    const [drugOrder, setdrugOrder] = React.useState([]);
-     //Get countries     
-      React.useEffect(() => {
-        async function getCharacters() {
-          const response = await fetch(apicountries);
-          const body = await response.json();
-          setdrugOrder(body.map(({ genericName, id }) => ({ label: genericName, value: id })));
-           //console.log(body);
-        }
-        getCharacters();
-       
-      }, []);
-    const classes = useStyles(); 
+    const [drugOrder, setDrugOrder] = React.useState([]);
+    const [successMsg, setSuccessMsg] = React.useState();
+    const classes = useStyles();
+     //Get countries    
+     
     //POST METHOD TO SAVE THE RECORD
     const {getpatient} =props.getpatientdetails ;
     const PatientID = getpatient.row.patientId;
     const visitId = getpatient.row.id;
-   //console.log(getpatient);
    const [medis, setmedis] = useState([]);
-//    const [relative, setRelative] = useState([{}]);
-  
-    //Save Assign Clinician 
-    const [medi, setmedi] = useState({ 
-            dosage_frequency: '', 
-            patientId: PatientID, 
-            visitId:visitId,
-            dosage_strength: '',
-            serviceName: '',
-            generic_name : '',
-            duration :  '',
-            duration_unit: '',
-            comment:'',
-            start_date : new Date()
-
-        }); 
- 
-
-    //    console.log(clinician);
+    
     const [showLoading, setShowLoading] = useState(false);  
     const apiUrl = url+"encounters/GENERAL_SERVICE/DRUG_ORDER_FORM/"+PatientID;  
-    const savemedi = (e) => { 
-        console.log('the button is click');
+    
+    const saveDrugOrders = (e) => { 
     e.preventDefault();  
-
+        setSuccessMsg("");
     const data = {
-            formData :medi,
+            formData : medis,
             patientId: PatientID, 
             visitId:visitId,
-            consultation_notes: medi.consultation_notes,
             formName: 'DRUG_ORDER_FORM',
             serviceName: 'GENERAL_SERVICE',
 
@@ -204,42 +176,44 @@ export default function Medication(props) {
             setShowLoading(false);
             props.history.push('/checkedin-patients')
             toast.success(" Successful!");
+            setSuccessMsg("Drug Order Successfully Saved!");
         }).catch((error) => {
             console.log(error);
         setShowLoading(false)
-        setmedi(false);
+        setmedis([]);
 
         }
         ); 
     };
-
-    const onChange = (e) => {
-    e.persist();     
-    setmedi({...medi, [e.target.name]: e.target.value});
-    } 
-
   
-    const addDrugs= value => {
+    const addDrugs = value => {
+        console.log('adding drug');
+        console.log(value);
         const allmedis = [...medis,  value ];
-        setmedi(allmedis);
-        console.log(medi);
+        setmedis(allmedis);
+        console.log(medis);
       };
       
       const removeDrug = index => {
         const allMedis = [...medis];
         allMedis.splice(index, 1);
         setmedis(allMedis);
+        console.log(medis);
       };
-    const handleAddDrugs = e => {
-        e.preventDefault();
-        if (!medi) return;
-        addDrugs(medi);
-        setmedi({start_date:"", duration_unit:"", comment:"",
-            duration:"", dosage_strength:"",drug_order:"", generic_name:"", dosage_frequency:""});
-      };
-
-      function getRelationshipName(id) {
-        return drugOrder.find(x => x.id === id).name;
+      const drugOrdersApi = url+"encounters/pharmacy/drugs";
+      React.useEffect(() => {
+        async function fetchDrugs() {
+          const response = await fetch(drugOrdersApi);
+          const body = await response.json();
+          setDrugOrder(body.map(({ genericName, id }) => ({ label: genericName, value: id })));
+           console.log(body);
+        }
+        fetchDrugs();
+       
+      }, []);
+      function getDrugName(id) {
+        return drugOrder.find(x => x.value == id).label;
+        //return 'drugNMw';
     }
   return (
           <Row>
@@ -250,8 +224,109 @@ export default function Medication(props) {
                                         Drug Order
                         </Typography>
                          <div>
-                                        <Form className={classes.formroot}  onSubmit={savemedi}>
+                         {successMsg ? 
+                        <Alert color="success"> 
+                    {successMsg}
+            </Alert> : ""
+            }
+                         <NewDrugOrderForm addDrugs={addDrugs} drugOrder={drugOrder} />
+                                        </div>
 
+                                      
+                                   
+                    </CardBody>
+                  </Card>
+                </Col>
+                
+                <Col lg={7} >
+               
+                { medis.length > 0 ?
+                    <Row>
+                        
+                        <br/>
+                        <br/>
+                       
+                        <Col lg={12} >
+                            <Card  style={cardStyle} >
+                                <CardBody>
+                                    <Typography className={classes.title} color="primary" gutterBottom>
+                                    <Col md={12}>
+                                    
+                                        <div className={classes.demo}>
+                                            <List>
+                                            {medis.map((medi, index) => (
+                                            <CurrentDrugOrders
+                                            key={index}
+                                            index={index}
+                                            medi={medi}
+                                            removeDrug={removeDrug}
+                                            drugTypeName={getDrugName(medi.drug_order)}
+                                            />
+                                            ))}
+                                            </List>
+                                    </div>
+                                    </Col>
+                                    </Typography>
+                                </CardBody>
+                            </Card>
+                        </Col>
+                        <Col lg={12}>
+                        <MatButton  
+                                        type="submit" 
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.button}
+                                        startIcon={<SaveIcon />}
+                                        onClick={saveDrugOrders}
+                                        >
+                                        Save &nbsp;
+                                        { showLoading ? <Spinner animation="border" role="status">
+                    <span className="sr-only">Loading...</span>
+                    </Spinner> : ""}
+                                </MatButton> 
+                        </Col>
+                   
+                                            </Row>
+                  : ""}
+                </Col> 
+               
+              </Row>   
+  );
+}
+
+function NewDrugOrderForm({addDrugs, drugOrder}){
+    
+    const classes = useStyles();
+    const [medi, setmedi] = useState({start_date : new Date()}); 
+    const [errorMsg, setErrorMsg] = useState('');
+    const onChange = (e) => {
+        e.persist();     
+        setmedi({...medi, [e.target.name]: e.target.value});
+        } 
+    
+    const handleAddDrugs = e => {
+        e.preventDefault();
+        setErrorMsg('');
+        if (!medi) return;
+//
+        if(!(medi.start_date && medi.duration_unit && medi.duration && medi.dose  && medi.dose_frequency && medi.drug_order)){
+            window.scrollTo(0, 0);
+            setErrorMsg('Fill all required fields');    
+            return;
+        }
+        addDrugs(medi);
+        setmedi({start_date:new Date(), duration_unit:"", comment:"",
+           duration:"", dose:"",drug_order:"", generic_name:"", dose_frequency:""});
+      };
+
+
+    return (
+        <Form className={classes.formroot} >
+ {errorMsg ? 
+                        <Alert color="danger"> 
+                    {errorMsg}
+            </Alert> : ""
+            }
                                         <Col md={12}>
                                             <FormGroup>
                                             <Label for="hospitalNumber">Drug Generic Name</Label>
@@ -269,18 +344,18 @@ export default function Medication(props) {
                                         </Col>
                                         <Col md={12}>
                                             <FormGroup>
-                                            <Label for="hospitalNumber">Dosage Strength</Label>
-                                                <Input type="text" name="duration_unit" id="duration_unit" placeholder="Dosage Strength" 
-                                                    value={medi.duration_unit}
+                                            <Label for="hospitalNumber">Dose <small >(Amount of medication taken at one time)</small></Label>
+                                                <Input type="text" name="dose" id="dose" placeholder="Dose" 
+                                                    value={medi.dose}
                                                     onChange={onChange}
                                                 />
                                             </FormGroup>  
                                         </Col>
                                         <Col md={12}>
                                             <FormGroup>
-                                            <Label for="hospitalNumber">Dosage Frequency</Label>
-                                                <Input type="text" name="dosage_frequency" id="dosage.fequency" placeholder="Dosage Frequency" 
-                                                    value={medi.dosageFrequency}
+                                            <Label for="hospitalNumber">Dose Frequency <small>(Frequency of dose per day)</small></Label>
+                                                <Input type="text" name="dose_frequency" id="dose_fequency" placeholder="Dose Frequency" 
+                                                    value={medi.dose_frequency}
                                                     onChange={onChange}
                                                 />
                                             </FormGroup>  
@@ -288,8 +363,8 @@ export default function Medication(props) {
                                         <Col md={12}>
                                             <Label for="middleName">Start Date</Label>
                                 
-                                            <DateTimePicker time={false} name="start_date"  id="start_date"   value={medi.start}   onChange={value1 => setmedi({...medi, dateRegistration: value1})}
-                                                defaultValue={new Date()} max={new Date()}
+                                            <DateTimePicker time={false} name="start_date"  id="start_date"   value={medi.start_date}   onChange={value1 => setmedi({...medi, start_date:value1})}
+                                                defaultValue={new Date()} max={new Date()} format='D/M/Y'
                                                 />
                                         </Col>
                                         <Col md={12}>
@@ -306,9 +381,10 @@ export default function Medication(props) {
                                                 <Label for="hospitalNumber">Duration Unit</Label>
                                                 <Input type="select" name="duration_unit" id="duration_unit"  value={medi.duration_unit}
                                                         onChange={onChange}>
-                                                    <option value="1">Days</option>
-                                                    <option value="2">Weeks</option>
-                                                    <option value="3">Months</option>
+                                                    <option value="">Select a duration unit</option>        
+                                                    <option value="Days">Days</option>
+                                                    <option value="Weeks">Weeks</option>
+                                                    <option value="Months">Months</option>
                                                 </Input>
                                                 </FormGroup>  
                                         </Col>
@@ -321,12 +397,6 @@ export default function Medication(props) {
                                                     />
                                                 </FormGroup>  
                                          </Col>
-                                            {showLoading && 
-                    
-                                                <Spinner animation="border" role="status">
-                                                <span className="sr-only">Loading...</span>
-                                                </Spinner> 
-                                            } 
                                              <br/>
 
                                              <MatButton  
@@ -337,69 +407,21 @@ export default function Medication(props) {
                                                 startIcon={<SaveIcon />}
                                                 onClick={handleAddDrugs}
                                             >
-                                                Save
+                                                Add
                                             </MatButton>
 
                                                </Form >
-                                        </div>
+    )
 
-                                      
-                                   
-                    </CardBody>
-                  </Card>
-                </Col>
-                <Col lg={7} >
-                    <Row>
-                        <Col lg={12} >
-                            <Card  style={cardStyle} >
-                                <CardBody>
-                                    <Typography className={classes.title} color="primary" gutterBottom>
-                                            Previous Order
-                                    </Typography>                   
-                                </CardBody>
-                            </Card>
-                        </Col>
-                        <br/>
-                        <br/>
-                        <Col lg={12} >
-                            <Card  style={cardStyle} >
-                                <CardBody>
-                                    <Typography className={classes.title} color="primary" gutterBottom>
-                                    <Col md={12}>
-                                        <div className={classes.demo}>
-                                            <List>
-                                            {medis.map((medi, index) => (
-                                            <RelativeList
-                                            key={index}
-                                            index={index}
-                                            medi={medi}
-                                            removeDrug={removeDrug}
-                                            drugTypeName={getRelationshipName(medi.drug_order)}
-                                            />
-                                            ))}
-                                            </List>
-                                    </div>
-                                    </Col>
-                                    </Typography>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
-                  
-                </Col>
-               
-              </Row>
-         
-  );
 }
-
-function RelativeList ({ medi, index, removeDrug, drug_order }) {
+function CurrentDrugOrders ({ medi, index, removeDrug, drugTypeName }) {
 
     return (
         <ListItem>
                   <ListItemText
-                    primary={ <React.Fragment>
-                        {drug_order}, {medi.firstName} {medi.otherNames} {medi.lastName}</React.Fragment> }
+                    primary={
+                    <React.Fragment>{drugTypeName}, {medi.dose} unit(s) to be taken {medi.dose_frequency} time(s) a day</React.Fragment> 
+                    }
                     secondary={
                       <React.Fragment>
                         <Typography
@@ -408,9 +430,8 @@ function RelativeList ({ medi, index, removeDrug, drug_order }) {
                          
                           color="textPrimary"
                         >
-                        {medi.mobilePhoneNumber} {medi.email} <br></br>
+                        Start at {medi.start_date.toLocaleDateString()} for {medi.duration} {medi.duration_unit} <br></br>
                         </Typography>
-                        {medi.address}
                       </React.Fragment>
                     }
                   />

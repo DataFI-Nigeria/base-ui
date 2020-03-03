@@ -9,10 +9,10 @@ import {
   Form, FormGroup, Label, Input 
 } from 'reactstrap';
 import { useState} from 'react';
-import { MdSave, MdTransferWithinAStation} from 'react-icons/md';
-import { FaVials } from 'react-icons/fa';
+import { MdSearch} from 'react-icons/md';
 import {TiArrowBack} from 'react-icons/ti';
-import { IoIosCheckmarkCircle } from 'react-icons/io';
+import MatButton from '@material-ui/core/Button';
+
 import "react-datepicker/dist/react-datepicker.css";
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -244,7 +244,46 @@ const onChangeLabnum = e => {
                 </Link>
               </CardHeader>
               <CardBody>
-                    
+              <Form  onSubmit={saveColllectSample}>
+                            <Row form >
+                              <Col md={3} style={{ marginTop: '20px'}}>
+                                        <Input
+                                            type="search"
+                                            placeholder="Lab. Number "
+                                            className="cr-search-form__input "
+                                            name="lab_number"
+                                            id="lab_number"
+                                            value={labNum.lab_number} 
+                                            onChangeLabnum={onChangeLabnum}
+                                             
+                                        />                                
+                                </Col>
+                                <Col md={2} >
+                                   <a href=""> <p style={{ paddingLeft:'30px', marginTop: '30px'}}> OR Generate </p> </a>          
+                                </Col>
+                                <Col md={2} style={{ marginTop: '20px'}}>
+                                    <DateTimePicker time={false} name="dateRegistration"  id="dateRegistration"  
+                                    defaultValue={new Date()} max={new Date()}
+                                    />                             
+                                </Col>
+                               
+                                <Col md={2} style={{ marginTop: '20px'}}>
+                                <FormGroup>
+                                    
+                                    <MatButton  
+                                        type="submit" 
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.button}
+                                        startIcon={<MdSearch />}
+                                    >
+                                        Save
+                                    </MatButton>
+                                </FormGroup>
+
+                                </Col>
+                            </Row>
+                        </Form>
                       <br/>
                         <Row>
                           <Col>
@@ -258,7 +297,7 @@ const onChangeLabnum = e => {
                                         <StyledTableCell align="center">Date Requested</StyledTableCell>
                                         <StyledTableCell align="center">Collected</StyledTableCell>
                                         <StyledTableCell align="center">Refered</StyledTableCell>
-                                        <StyledTableCell align="center">Actions</StyledTableCell>
+                                        
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -270,26 +309,20 @@ const onChangeLabnum = e => {
                                             <TableCell align="center"></TableCell>
                                             <TableCell align="center">{row.dateEncounter}</TableCell>
                                             <TableCell align="center">  
-                                              <IoIosCheckmarkCircle className="text-primary"/>
+                                              <FormGroup check>
+                                              <Label check disabled>
+                                                <Input type="checkbox" checked />{' '}
+                                                </Label>
+                                              </FormGroup>
                                             </TableCell>
                                             <TableCell align="center">
-                                              <IoIosCheckmarkCircle />
+                                                <FormGroup check>
+                                                <Label check >
+                                                  <Input type="checkbox" />{' '}
+                                                  </Label>
+                                               </FormGroup>
                                             </TableCell>
-                                            <TableCell align="center">
-                                              <Tooltip title="Collect Sample">
-                                                  <IconButton aria-label="Collect Sample" onClick={() => {
-                                                    getUsermodal(row);
-
-                                                    }} >
-                                                    <FaVials size='25'/>
-                                                  </IconButton>
-                                              </Tooltip>
-                                              <Tooltip title="Refer">
-                                                  <IconButton aria-label="Refer" onClick={toggle}>
-                                                    <MdTransferWithinAStation size="25"/>
-                                                  </IconButton>
-                                              </Tooltip>
-                                            </TableCell>
+                                            
                                             
                                             </StyledTableRow>
                                        ))}
@@ -300,31 +333,7 @@ const onChangeLabnum = e => {
                             </Card>
                           </Col>
                         </Row>
-                        <Form  onSubmit={saveColllectSample}>
-                            <Row form >
-                                <Col md={4} style={{ marginTop: '33px'}}>
-                                        <Input
-                                            type="search"
-                                            placeholder="Lab. Number "
-                                            className="cr-search-form__input "
-                                            name="lab_number"
-                                            id="lab_number"
-                                            value={labNum.lab_number} 
-                                            onChangeLabnum={onChangeLabnum}
-                                             
-                                        />                                
-                                </Col>
-                                
-                                
-                                <Col md={2} style={{ marginTop: '33px'}}>
-                                <FormGroup>
-                                    <Button color="primary" className=" float-right mr-1" >
-                                            <MdSave/>  Save
-                                    </Button>
-                                </FormGroup>
-                                </Col>
-                            </Row>
-                        </Form>
+                        
                       </CardBody>
                     </Card>
                   </Col>

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-
+import { TiWarningOutline } from "react-icons/ti";
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -22,10 +22,13 @@ import {
     FormGroup,
     Input,
     Label,
+    Alert,
   } from 'reactstrap';
 
-
-
+  import {url} from 'axios/url';
+  import axios from 'axios'; 
+  import { toast } from "react-toastify";
+  import Spinner from 'react-bootstrap/Spinner';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -68,7 +71,8 @@ const useStyles = makeStyles(theme => ({
       
       }));
    
-  
+     
+
 function not(a, b) {
     return a.filter(value => b.indexOf(value) === -1);
   }
@@ -78,11 +82,22 @@ function not(a, b) {
   }
 
 export default function ConsultationPage(props) {
+  const {getpatient} =props.getpatientdetails ;
+   
+   const PatientID = getpatient.row.patientId;
+   const visitId = getpatient.row.id;
+   const saveTestUrl = url+"encounters/GENERAL_SERVICE/LABTEST_ORDER_FORM/"+PatientID; 
+
     const classes = useStyles();
 
     const [checked, setChecked] = React.useState([]);
-    const [left, setLeft] = React.useState([0, 1, 2, 3]);
-    const [right, setRight] = React.useState([4, 5, 6, 7]);
+    const [testGroups, setTestGroup] = React.useState([]);
+    //const [tests, setTests] = React.useState([]);
+    const [left, setLeft] = React.useState([]);
+    const [right, setRight] = React.useState([]);
+    const [showLoading, setShowLoading] = useState(false);  
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const leftChecked = intersection(checked, left);
     const rightChecked = intersection(checked, right);
@@ -98,6 +113,7 @@ export default function ConsultationPage(props) {
     }
 
     setChecked(newChecked);
+    
   };
 
   const handleAllRight = () => {
@@ -122,11 +138,60 @@ export default function ConsultationPage(props) {
     setRight([]);
   };
 
+  useEffect(() => {
+    async function fetchTestGroup() {
+      console.log('fetching test group');
+        try{
+      const response = await fetch(url+'encounters/laboratory/labtest-group');
+      const body = await response.json();
+      console.log(body);         
+     setTestGroup(body.map(({ category, id }) => ({ label: category, value: id })));
+      }catch(error){
+          console.log(error);
+      }
+    }
+    fetchTestGroup();
+  }, []);
+
+  const getTestByTestGroup = (e) => {
+    const testGroupId = e.target.value;
+    async function fetchTests() {
+        const response = await fetch(url+"encounters/laboratory/"+testGroupId+"/labtest");
+        const testLists = await response.json();
+        setLeft(testLists);
+      }
+      fetchTests();
+}
+const saveTestOrder = (e) => { 
+  e.preventDefault();  
+  setShowLoading(true);
+  setSuccessMessage('');
+  const data = {
+          formData :right,
+          patientId: PatientID, 
+          visitId:visitId,
+          formName: 'LABTEST_ORDER_FORM',
+          serviceName: 'GENERAL_SERVICE'
+  }; 
+  axios.post(saveTestUrl, data)
+      .then((result) => {          
+          setShowLoading(false);
+          setRight([]);
+          setLeft([]);
+          setSuccessMessage("Test Order Successfully Saved!");
+          toast.success(" Successful!");
+      }).catch((error) => {
+          console.log(error);
+          setSuccessMessage("An error occurred, could not save request!");
+      setShowLoading(false)
+      }
+      ); 
+  };
   const customList = items => (
     <Paper className={classes.paper}>
       <List dense component="div" role="list">
         {items.map(value => {
-          const labelId = `transfer-list-item-${value}-label`;
+          const labelId = `transfer-list-item-${value.id}-label`;
 
           return (
             <ListItem key={value} role="listitem" button onClick={handleToggle(value)}>
@@ -138,7 +203,7 @@ export default function ConsultationPage(props) {
                   inputProps={{ 'aria-labelledby': labelId }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`List item ${value + 1}`} />
+              <ListItemText id={labelId} primary={value.description} />
             </ListItem>
           );
         })}
@@ -147,10 +212,10 @@ export default function ConsultationPage(props) {
     </Paper>
   );
 
-    
+  
 
 return (
-<form className={classes.form} >
+<form className={classes.form} onSubmit={saveTestOrder} >
     {/* The input search field  */}
     
 <Grid container spacing={2}>
@@ -163,16 +228,25 @@ return (
                         <Typography className={classes.title} color="primary" gutterBottom>
                             Test Order
                         </Typography>
+                        {successMessage ? 
+                        <Alert color="primary">
+                <TiWarningOutline 
+                    size="30"
+                    className=" text-dark"/>  
+                    {successMessage}
+            </Alert> : ""
+            }
                         <br/>
                         <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
                             <FormGroup>
-                                    <Label for="qualification">Please Select Test Order</Label>
-                                    <Input type="select" name="educationId" >
-                                        <option value="1">PHD</option>
-                                        <option value="2">MSC</option>
-                                        <option value="3">BSC</option>
-                                        <option value="4">HND</option>
-                                        <option value="5">NCE</option>
+                                    <Label for="testGroup">Please Select Test Order</Label>
+                                    <Input type="select" name="testGroup" onChange={getTestByTestGroup}>
+                                        <option value="">Select Test Group</option>
+                                        {testGroups.map(({ label, value }) => (
+                                                <option key={value} value={value}>
+                                                {label}
+                                                </option>
+                                                ))}
                                     </Input>
                                 </FormGroup> 
 
@@ -228,6 +302,9 @@ return (
                             </Grid> 
                             <br/>
                             <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
+                      
+                    
+            
                                 <MatButton  
                                         type="submit" 
                                         variant="contained"
@@ -235,7 +312,10 @@ return (
                                         className={classes.button}
                                         startIcon={<SaveIcon />}
                                         >
-                                        Save
+                                        Save &nbsp;
+                                        { showLoading ? <Spinner animation="border" role="status">
+                    <span className="sr-only">Loading...</span>
+                    </Spinner> : ""}
                                 </MatButton> 
                             </Grid>                      
                     </CardContent>                      

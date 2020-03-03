@@ -35,16 +35,11 @@ const navComponents = [
   { to: '/test-order', name: 'Test Order', exact: false, Icon: FaVials },
   {
     to: '/collected-sample',
-    name: 'Collected Sample',
-    exact: false,
-    Icon: FaVials,
-  },
-  {
-    to: '/test-result',
     name: 'Test Result',
     exact: false,
     Icon: FaVials,
   },
+  
 ];
 
 const pageContents = [
