@@ -5,7 +5,9 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
-
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import {url} from 'axios/url';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,7 +30,22 @@ const chips = {
 };
 
 export default function PatientVitals(props) {
-  const classes = useStyles();
+    const getpatientID =props.getpatientID;
+    const classes = useStyles();
+    const [data, setData] = useState({pulse:'', height: '', systolic: '', diastolic: '', bodyWeight: ''}); 
+    // const newid = data;
+    
+    //console.log(data..patientId);
+    const apistate = url+"encounters/CLINICAL_SERVICE/VITAL_SIGNS_FORM/"+getpatientID+"/latest";
+    useEffect(() => {    
+    const GetData = async () => {    
+        const result = await axios(apistate);    
+        setData(result.data.formData);  
+        //console.log(result.data.formData);   
+    }  
+    GetData();     
+
+    }, []); 
 
   return (
     <div className={classes.root}>
@@ -38,49 +55,52 @@ export default function PatientVitals(props) {
                         Recent Vital Signs
                         </Typography>
                             <Grid container spacing={12}>
+                            
                                 <Grid item xs='6'>
                                     <Typography  color="textPrimary" gutterBottom>
-                                        Pulse : <Chip variant="outlined" size="small"  label="56pm" style={chips}/></Typography>
+                                        
+                                        Pulse :<Chip variant="outlined" size="small"  label={data.pulse} style={chips}/></Typography>
                                     
                                 </Grid>
+                          
                                 <Grid item xs='6'>
                                     <Typography  color="textPrimary" gutterBottom> 
-                                            Weight: <Chip variant="outlined" size="small" style={chips} label="56pm" />
+                                            Weight: <Chip variant="outlined" size="small" style={chips} label={data.pulse} />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs='6'>
                                     <Typography color="textPrimary" gutterBottom>
-                                            RR : <Chip variant="outlined" size="small" style={chips} label="56pm" />
+                                            RR : <Chip variant="outlined" size="small" style={chips} label={data.pulse} />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs='6'>
                                     <Typography color="textPrimary" gutterBottom>
-                                            Height: <Chip variant="outlined" size="small" style={chips} label="56pm" />
+                                            Height: <Chip variant="outlined" size="small" style={chips} label={data.pulse} />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs='6'>
                                     <Typography  color="textPrimary" gutterBottom>
-                                            Tempreature: <Chip variant="outlined" size="small" style={chips}  label="56pm" />
+                                            Tempreature: <Chip variant="outlined" size="small" style={chips}  label={data.pulse} />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs='6'>
                                     <Typography color="textPrimary" gutterBottom>
-                                            BMI: <Chip variant="outlined" size="small" style={chips} label="56pm" />
+                                            BMI: <Chip variant="outlined" size="small" style={chips} label={data.pulse} />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs='6'>
                                     <Typography  color="textPrimary" gutterBottom>
-                                            Blood Presure : <Chip variant="outlined" size="small" style={chips}  label="56pm" />
+                                            Blood Presure : <Chip variant="outlined" size="small" style={chips}  label={data.pulse} />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs='6'>
                                     <Typography  color="textPrimary gutterBottom">
-                                            BMI Sstatus: <Chip variant="outlined" size="small" style={chips}  label="56pm" />
+                                            BMI Sstatus: <Chip variant="outlined" size="small" style={chips}  label={data.pulse} />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs='23'>
                                     <Typography className={classes.chips} color="textPrimary" gutterBottom>
-                                            Paulse : <Chip variant="outlined" size="small"   style={chips} label="56pm" />
+                                            Paulse : <Chip variant="outlined" size="small"   style={chips} label={data.pulse} />
                                     </Typography>
                                 </Grid>
                                 

@@ -1,4 +1,4 @@
-# [lamisplus UI](git@github.com:alexalozie/base-ui.git)
+# [Lamis Plus Frontend](https://Mathew77.github.io/lamisplus/)
 
 
 
@@ -8,7 +8,7 @@ You can check out [live preview](https://reduction-admin.github.io/react-reducti
 
 ## Quick Start
 
-1.  Clone the repo `git clone git@github.com:alexalozie/base-ui.git`
+1.  Clone the repo `git clone git@github.com:Mathew77/lamisplus.git`
 2.  Go to your project folder from your terminal
 3.  Run: `npm install` or `yarn install`
 4.  After install, run: `npm run start` or `yarn start`

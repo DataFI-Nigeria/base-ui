@@ -6,72 +6,31 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Paper from '@material-ui/core/Paper';
+
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import Chip from '@material-ui/core/Chip';
-import TagFacesIcon from '@material-ui/icons/TagFaces';
 // {/* Auto textfield complete */}
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import parse from 'autosuggest-highlight/parse';
-import match from 'autosuggest-highlight/match';
-// import {
-//     FaPlusCircle,
-// } from 'react-icons/fa';
-// import { Link } from 'react-router-dom';
 import {
     MdDashboard,
     MdContacts
   } from 'react-icons/md';
 import {GiFiles,GiTestTubes } from 'react-icons/gi';  
-import { FaBriefcaseMedical, FaChartLine} from "react-icons/fa"; 
+import { FaBriefcaseMedical} from "react-icons/fa"; 
 //{/*  Check box list */}
-import FormLabel from '@material-ui/core/FormLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Checkbox from '@material-ui/core/Checkbox';
 import { Line } from 'react-chartjs-2';
 import {
     ViralLoad,Weight
   } from 'demos/patientVIral';
-import {
-CardBody,
-Col,
-Row,
-FormGroup,
-Input,
-} from 'reactstrap';
-import Button from '@material-ui/core/Button';
-import SaveIcon from '@material-ui/icons/Save';
-
-//the paper for the patient detail at the header 
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-// import List from '@material-ui/core/List';
-// import ListItem from '@material-ui/core/ListItem';
-// import ListItemText from '@material-ui/core/ListItemText';
-// import Artclinic from 'components/PatientDashboard/ArtClinic';
 import PatientAlert from 'components/PatientDashboard/PatientAlert';
 import PatientAllergies from 'components/PatientDashboard/PatientAllergies';
 import PatientVitals from 'components/PatientDashboard/PatientVitals';
 import PatientLabTest from 'components/PatientDashboard/PatientLabTest';
-import ClinicalHistory from 'components/PatientDashboard/ClinicalHistory'
-
-const options = [
-  
-  'Pyxis',
-  'Sedna',
-  'Titania',
-  'Triton',
-  'Umbriel',
-];
-const ITEM_HEIGHT = 48;
+import ClinicalHistory from 'components/PatientDashboard/ClinicalHistory';
+import Consultation from './consulatation/consultation';
+import PatientDetailCard from 'components/Functions/PatientDetailCard';
+import TestOrder from './TestOrder/TestOrder';
+import Medication from './Medication/Medication';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -148,15 +107,7 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(0.5),
         },
     },
-    chiproot: {
-        display: 'flex',
-        justifyContent: 'center',
-        flexWrap: 'wrap',
-        padding: theme.spacing(0.5),
-    },
-    chip: {
-        margin: theme.spacing(0.5),
-    },
+    
     checkboxroot: {
         display: 'flex',
     },
@@ -214,10 +165,7 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: '#eee',
     },
     }));
-    const cardStyle = {
-        borbderColor: '#fff',
-        marginBottom: 10,
-    };
+
     const cardHeight = {
         height: 200, 
         position: 'relative',
@@ -225,9 +173,7 @@ const useStyles = makeStyles(theme => ({
     };
 
 
-
-
-export default function ScrollableTabsButtonForce() {
+export default function ScrollableTabsButtonForce(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -235,73 +181,16 @@ export default function ScrollableTabsButtonForce() {
     setValue(newValue);
     
   };
-  const [chipData, setChipData] = React.useState([
-    { key: 0, label: 'Haemoglobin' },
-    { key: 1, label: 'HIV(Blood)' },
-    { key: 2, label: 'Absolute Cocunt' },
 
-  ]);
 
-  const handleDelete = chipToDelete => () => {
-    setChipData(chips => chips.filter(chip => chip.key !== chipToDelete.key));
-  };
 
-  const [state, setState] = React.useState({
-    gilad: true,
-    jason: false,
-    antoine: false,
-  });
-
-  const handleChangecheckbox = name => event => {
-    setState({ ...state, [name]: event.target.checked });
-  };
-
-  const { gilad, jason, antoine } = state;
-  const error = [gilad, jason, antoine].filter(v => v).length !== 2;
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   return (
     <div className={classes.root}>
-         <div className={classes.inforoot} style={{ backgroundColor: 'blue !important'}}>
-            <ExpansionPanel defaultExpanded>
-                <ExpansionPanelSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1c-content"
-                id="panel1c-header"
-                >
-                <div className={classes.column}>
-                    <Typography className={classes.heading}>
-                        Name: Mathew Adeoye
-                        <br/>
-                        Gender : Female
-                    </Typography>
-                </div>
-                <div className={classes.column}>
-                    <Typography className={classes.secondaryHeading}>
-                        Birthday : June, 14 1990 (20 years)
-                        <br/>
-                        phone Number : +234567890
-                    </Typography>
-                </div>
-                <div className={classes.column}>
-                    <Typography className={classes.secondaryHeading}>
-                        Email Address : Mathew Adegbite
-                        
-                    </Typography>
-                </div>
-                </ExpansionPanelSummary>
-               
-            </ExpansionPanel>
-        </div>
+        <div className={classes.inforoot} >
+            <PatientDetailCard getpatientdetails={props.location.state }/>   
+        </div> 
+
       <AppBar position="static" >
         <Tabs
           value={value}
@@ -317,31 +206,12 @@ export default function ScrollableTabsButtonForce() {
           <Tab className={classes.title} label="Service Form" icon={<GiFiles />} {...a11yProps(2)} />
           <Tab className={classes.title} label="Test Order" icon={<GiTestTubes />} {...a11yProps(3)} />
           <Tab className={classes.title} label="Medication" icon={<FaBriefcaseMedical />} {...a11yProps(4)} />
-          <Tab className={classes.title} label="Others" icon={<FaChartLine />} {...a11yProps(5)}  onClick={handleClick}/>
+          {/* <Tab className={classes.title} label="Others" icon={<FaChartLine />} {...a11yProps(5)}  onClick={handleClick}/> */}
           
           
         </Tabs>
         <div>
-      
-      <Menu
-        id="long-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          style: {
-            maxHeight: ITEM_HEIGHT * 4.5,
-            width: 200,
-          },
-        }}
-      >
-        {options.map(option => (
-          <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
-            {option}
-          </MenuItem>
-        ))}
-      </Menu>
+     
     </div>
       </AppBar>
       {/* The DashBoad Tab  */}
@@ -351,7 +221,7 @@ export default function ScrollableTabsButtonForce() {
                     <PatientAlert height={cardHeight}/>   
                 </Grid>
                 <Grid item xs='6'>
-                    <PatientAllergies height={cardHeight}/>   
+                    <PatientAllergies height={cardHeight} addstatus={false}/>   
                 </Grid>
                 <Grid item xs='6' >                    
                     <PatientVitals height={cardHeight}/> 
@@ -478,151 +348,11 @@ export default function ScrollableTabsButtonForce() {
 {/* End of dashboard */}
 
 {/* Begining of Service Form */}
+<TabPanel value={value} index={1}>
+ 
+            <Consultation getpatientdetails={props.location.state } height={cardHeight}/>
 
-      <TabPanel value={value} index={1}>
-        <Grid container spacing={2}>
-                <Grid item xs='6'>                    
-                    <Card className={classes.cardroot} >
-                        <CardContent>
-                            <Typography className={classes.title} color="primary" gutterBottom>
-                            Latest Vital Signs
-                            </Typography>
-                                <Grid container spacing={12}>
-                                    <Grid item xs='6'>
-                                        <Typography className={classes.pos} color="textSecondary" >
-                                                Pulse : <span style={{fontSize: 'bold'}}>56pm</span>
-                                               
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs='6'>
-                                        <Typography className={classes.pos} color="textSecondary" > 
-                                                Weight: 23kg
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs='6'>
-                                        <Typography className={classes.pos} color="textSecondary">
-                                                RR : 56pm
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs='6'>
-                                        <Typography className={classes.pos} color="textSecondary">
-                                                Height: 23kg
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs='6'>
-                                        <Typography className={classes.pos} color="textSecondary">
-                                                Tempreature : 56pm
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs='6'>
-                                        <Typography className={classes.pos} color="textSecondary">
-                                                BMI: 23kg
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs='6'>
-                                        <Typography className={classes.pos} color="textSecondary">
-                                                Blood Presure : 56pm
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs='6'>
-                                        <Typography className={classes.pos} color="textSecondary">
-                                                BMI Sstatus: 23kg
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs='23'>
-                                        <Typography className={classes.pos} color="textSecondary">
-                                                Paulse : 56pm
-                                        </Typography>
-                                    </Grid>
-                                    
-                                </Grid>                               
-                        </CardContent>                      
-                        </Card>                     
-                </Grid>
-               
-                <Grid item xs='6'>
-                
-                    <Card className={classes.cardroot} >
-                        <CardContent>
-                            <Typography className={classes.title} color="primary" gutterBottom>
-                            Allergies
-                            </Typography>
-                                <Grid container spacing={12}>
-                                    <Grid item xs='12'>
-                                        <Typography className={classes.pos} color="textSecondary" >
-                                        <div className={classes.allergiesroot}>
-                                           <Chip
-                                                label="Pencline"
-                                                color="secondary"
-                                                variant="outlined"
-                                            />
-                                            <Chip
-                                                label="Nut Shirm"
-                                                color="secondary"
-                                                variant="outlined"
-                                            />
-                                            <Chip
-                                                label="Deletable secondary"
-                                                color="secondary"
-                                                variant="outlined"
-                                            />
-                                            
-                                            </div>
-                                               
-                                        </Typography>
-                                    </Grid>
-                                    
-                                </Grid>                               
-                        </CardContent>                      
-                    </Card>
-                </Grid>
-            
-                <Grid item xs='6'>
-                    <Card className={classes.cardroot} style={{ height: '200px'}}>
-                            <CardContent>
-                                <Typography className={classes.title} color="primary" gutterBottom>
-                                Forms
-                                </Typography>
-                                    <Grid container spacing={12}>
-                                        <Grid item xs='12'>
-                                            <Typography className={classes.pos} color="textSecondary" >
-                                            <FormGroup>
-                                            
-                                            <Input type="textarea" name="text"  style={{height: '150px' }}/>
-                                            </FormGroup>
-                                                
-                                            </Typography>
-                                        </Grid>
-                                        
-                                    </Grid>                               
-                            </CardContent>                      
-                        </Card>
-                </Grid>
-                <Grid item xs='6'>
-                <Card className={classes.cardroot} style={{ height: '200px'}}>
-                            <CardContent>
-                                <Typography className={classes.title} color="primary" gutterBottom>
-                                Forms
-                                </Typography>
-                                    <Grid container spacing={12}>
-                                        <Grid item xs='12'>
-                                            <Typography className={classes.pos} color="textSecondary" >
-                                            <FormGroup>
-                                            
-                                            <Input type="textarea" name="text"  style={{height: '150px' }}/>
-                                            </FormGroup>
-                                                
-                                            </Typography>
-                                        </Grid>
-                                        
-                                    </Grid>                               
-                            </CardContent>                      
-                        </Card>
-                </Grid>
-            </Grid>
-
-      </TabPanel>
-{/* End of Service Form */}
+</TabPanel>     
  {/* Begining of consultation  */}
  <TabPanel value={value} index={2}>
       <Grid container spacing={2}>
@@ -633,225 +363,12 @@ export default function ScrollableTabsButtonForce() {
 </TabPanel>
 
       <TabPanel value={value} index={3}>
-      <Grid container spacing={2}>
-                <Grid item xs='12'> 
-                    <Card className={classes.cardroot}>
-                            <CardContent>
-                                <Typography className={classes.title} color="primary" gutterBottom>
-                                    Selected Test Order
-                                </Typography>
-                                 
-                                <Paper className={classes.chiproot}>
-                                    {chipData.map(data => {
-                                        let icon;
-
-                                        if (data.label === 'React') {
-                                        icon = <TagFacesIcon />;
-                                        }
-
-                                        return (
-                                        <Chip
-                                            key={data.key}
-                                            icon={icon}
-                                            label={data.label}
-                                            onDelete={data.label === 'React' ? undefined : handleDelete(data)}
-                                            className={classes.chip}
-                                        />
-                                        );
-                                    })}
-                                </Paper>                                                                  
-                        </CardContent>                      
-                    </Card>
-                </Grid>
-            
-                <Grid item xs='12'>
-                    <Card className={classes.cardroot}>
-                            <CardContent>
-                                <Typography className={classes.title} color="primary" gutterBottom>
-                                Test Order
-                                </Typography>
-                                    <Grid container spacing={12}>
-                                        <Grid item xs='12'>
-                                            <Typography className={classes.pos} color="textSecondary" >
-                                            <Autocomplete
-                                                id="highlights-demo"
-                                                style={{ width: 300 }}
-                                                options={top100Films}
-                                                getOptionLabel={option => option.title}
-                                                renderInput={params => (
-                                                    <TextField {...params} label="Lab Test Group" variant="outlined" fullWidth margin="normal" />
-                                                )}
-                                                renderOption={(option, { inputValue }) => {
-                                                    const matches = match(option.title, inputValue);
-                                                    const parts = parse(option.title, matches);
-
-                                                    return (
-                                                    <div>
-                                                        {parts.map((part, index) => (
-                                                        <span key={index} style={{ fontWeight: part.highlight ? 700 : 400 }}>
-                                                            {part.text}
-                                                        </span>
-                                                        ))}
-                                                    </div>
-                                                    );
-                                                }}
-                                                />   
-
-                                                <br/>
-                                                <div className={classes.checkboxroot}>
-                                                    <FormControl component="fieldset" className={classes.formControl}>
-                                                        <FormLabel component="legend">Assign responsibility</FormLabel>
-                                                        <FormGroup>
-                                                        <FormControlLabel
-                                                            control={<Checkbox checked={gilad} onChange={handleChangecheckbox('gilad')} value="gilad" />}
-                                                            label="Gilad Gray"
-                                                        />
-                                                        <FormControlLabel
-                                                            control={<Checkbox checked={jason} onChange={handleChangecheckbox('jason')} value="jason" />}
-                                                            label="Jason Killian"
-                                                        />
-                                                        <FormControlLabel
-                                                            control={
-                                                            <Checkbox checked={antoine} onChange={handleChangecheckbox('antoine')} value="antoine" />
-                                                            }
-                                                            label="Antoine Llorca"
-                                                        />
-                                                        </FormGroup>
-                                                        <FormHelperText>Be careful</FormHelperText>
-                                                    </FormControl>
-                                                    <FormControl required error={error} component="fieldset" className={classes.formControl}>
-                                                        <FormLabel component="legend">Pick two</FormLabel>
-                                                        <FormGroup>
-                                                        <FormControlLabel
-                                                            control={<Checkbox checked={gilad} onChange={handleChangecheckbox('gilad')} value="gilad" />}
-                                                            label="Gilad Gray"
-                                                        />
-                                                        <FormControlLabel
-                                                            control={<Checkbox checked={jason} onChange={handleChangecheckbox('jason')} value="jason" />}
-                                                            label="Jason Killian"
-                                                        />
-                                                        <FormControlLabel
-                                                            control={
-                                                            <Checkbox checked={antoine} onChange={handleChangecheckbox('antoine')} value="antoine" />
-                                                            }
-                                                            label="Antoine Llorca"
-                                                        />
-                                                        </FormGroup>
-                                                        <FormHelperText>You can display an error</FormHelperText>
-                                                    </FormControl>
-                                                    </div>
-                                                
-                                            </Typography>
-                                        </Grid>
-                                        
-                                    </Grid>                               
-                            </CardContent>                      
-                        </Card>
-
-                </Grid>
-                
-            </Grid>
+        <TestOrder getpatientdetails={props.location.state } height={cardHeight}/>
       </TabPanel>
     {/* End of consultation */}
     <TabPanel value={value} index={4}>
         {/* Card stats */}
-        <Row>
-                <Col lg={4} >
-                  <Card  style={cardStyle} className=" p-3">
-                    <CardBody>
-                        <Typography className={classes.title} color="primary" gutterBottom>
-                                        Drug Order
-                        </Typography>
-                                <form className={classes.formroot} noValidate autoComplete="off">
-                                        
-                                        <div>
-                                            <TextField
-                                            required
-                                            id="outlined-required"
-                                            label="Enter Drug Name"
-                                            defaultValue="Drug Name"
-                                            variant="outlined"
-                                            />
-                                            <TextField
-                                            disabled
-                                            id="outlined-required"
-                                            label="Drug Unit"
-                                            defaultValue="Drug Unit"
-                                            variant="outlined"
-                                            />
-                                            <TextField
-                                            id="outlined-password-input"
-                                            label="Frequency"
-                                            autoComplete="current-password"
-                                            variant="outlined"
-                                            />
-                                            <TextField
-                                            id="outlined-read-only-input"
-                                            label="Start Date"
-                                            defaultValue="Start Date"
-                                            InputProps={{
-                                                readOnly: true,
-                                            }}
-                                            variant="outlined"
-                                            />
-                                            <TextField
-                                            id="outlined-number"
-                                            label="Duration"
-                                            type="number"
-                                            InputLabelProps={{
-                                                shrink: true,
-                                            }}
-                                            variant="outlined"
-                                            />
-                                            <TextField id="outlined-search" label="Duration Unit" type="text" variant="outlined" />
-                                            <TextField
-                                            id="outlined-helperText"
-                                            label="Enter Instruction"
-                                            defaultValue="Enter Instruction"
-                                            variant="outlined"
-                                            />
-                                             <br/>
-                                                    <Button
-                                                        variant="contained"
-                                                        color="primary"
-                                                        className={classes.button}
-                                                    
-                                                        startIcon={<SaveIcon />}
-                                                    >
-                                                        Save
-                                                    </Button>
-                                        </div>
-                                    </form> 
-                    </CardBody>
-                  </Card>
-                </Col>
-                <Col lg={8} >
-                    <Row>
-                        <Col lg={12} >
-                            <Card  style={cardStyle} >
-                                <CardBody>
-                                    <Typography className={classes.title} color="primary" gutterBottom>
-                                            Previous Order
-                                    </Typography>                   
-                                </CardBody>
-                            </Card>
-                        </Col>
-                        <br/>
-                        <br/>
-                        <Col lg={12} >
-                            <Card  style={cardStyle} >
-                                <CardBody>
-                                    <Typography className={classes.title} color="primary" gutterBottom>
-                                            Current Order
-                                    </Typography>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
-                  
-                </Col>
-               
-              </Row>
+        <Medication getpatientdetails={props.location.state }  />
 
       </TabPanel>
       <TabPanel value={value} index={5}>
@@ -925,11 +442,3 @@ export default function ScrollableTabsButtonForce() {
   );
 }
 
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-const top100Films = [ 
-    { title: 'Psycho', year: 1960 },
-    { title: 'The Green Mile', year: 1999 },
-    { title: 'The Intouchables', year: 2011 },
-    { title: 'Modern Times', year: 1936 },
-    { title: 'Raiders of the Lost Ark', year: 1981 },
-  ];

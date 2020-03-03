@@ -9,7 +9,7 @@ function EmployeList(props) {
 
   React.useEffect(() => {
     async function getCharacters() {
-      const response = await fetch("https://jsonplaceholder.typicode.com/users");
+      const response = await fetch("http://10.167.4.185:8080/api/countries");
       const body = await response.json();
       setItems(body.map(({ name, id }) => ({ label: name, value: id })));
     }
@@ -39,6 +39,7 @@ function EmployeList(props) {
       pathname: '/edit/' + id  
     });  
   };  
+  
   
   return (  
     <div className="animated fadeIn">  
@@ -95,10 +96,11 @@ function EmployeList(props) {
     </option>
   ))}
 </select>
-     
 
-    </div>  
+
+    </div> 
+     
   )  
 }  
-  
+
 export default EmployeList

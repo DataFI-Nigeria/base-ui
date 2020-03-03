@@ -4,6 +4,7 @@ import { EmptyLayout, LayoutRoute, MainLayout } from 'components/Layout';
 import PageSpinner from 'components/PageSpinner';
 // import AuthPage from 'pages/AuthPage';
 import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import componentQueries from 'react-component-queries';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import './styles/reduction.scss';
@@ -13,6 +14,8 @@ const DashboardPage = React.lazy(() => import('pages/DashboardPage'));
 
 /* New Page loading using easy loading */
 const PateintRegistationPage = React.lazy(() => import('components/patient/PateintRegistationPage'));
+const EditPatient = React.lazy(() => import('components/patient/EditPatient'));
+
 const CheckInPage = React.lazy(() => import('components/CheckIn/CheckInPage'));
 const VitalSignsPage = React.lazy(() => import('components/Vitals/VitalSignsPage'));
 /* Consultation page loading */
@@ -45,7 +48,7 @@ const EnrollmentList = React.lazy(() => import('components/Hiv/EnrollmentList'))
 const EnrollPatient = React.lazy(() => import('components/Hiv/EnrollPatient'));
 const EnrolledPatients = React.lazy(() => import('components/Hiv/EnrolledPatients')); 
 const EnrolledPatientsDashboard = React.lazy(() => import('components/Hiv/EnrolledPatientsDashboard'));
-/* Sample table i design */
+/* Sample Test table i design */
 const DataTable1 = React.lazy(() => import('pages/DataTable/DataTable1'));
 const DataTable2 = React.lazy(() => import('pages/DataTable/DataTable2'));
 const TestPage = React.lazy(() => import('pages/TestPage'));
@@ -86,9 +89,10 @@ class App extends React.Component {
                 <Route exact path="/collected-sample" component={CollectedSample} />
                 <Route exact path="/test-result" component={TestResult} />
                 <Route exact path="/collect-sample" component={CollectSample} />
+                {/* Patient Route */}
 
                 <Route exact path="/patients" component={PatientsPage} /> 
-              
+                <Route exact path="/edit-patient/:id" component={EditPatient} /> 
                 {/* Pharmacy Links */}
                 <Route exact path="/pharmacy" component={PharmacyPage} />
                 <Route exact path="/pending-prescription" component={PendingPrescription} />
@@ -96,7 +100,7 @@ class App extends React.Component {
                 <Route exact path="/dispensed-prescription" component={DispensedPrescription} />
 
                 <Route exact path="/appointment" component={AppointmentPage} />
-                <Route exact path="/checkin-search" component={CheckInPatientPage} />
+                <Route exact path="/checkedin-patients" component={CheckInPatientPage} />
                 <Route exact path="/view-vitals" component={ViewVitalsPage} />
                 <Route exact path="/add-vitals" component={AddVitalsPage} />
                 {/* <Route exact path="/checkin-modal" component={CheckInModal} /> */}

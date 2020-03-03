@@ -1,6 +1,7 @@
 import Page from 'components/Page';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MatButton from '@material-ui/core/Button';
+import './PatientRegistrationPage.css'
 import {
   Col,
   Form,
@@ -11,6 +12,14 @@ import {
   Alert,
 } from 'reactstrap';
 import { makeStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Typography from '@material-ui/core/Typography';
+
 import {  Card,CardContent, }
 from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
@@ -23,12 +32,19 @@ import Spinner from 'react-bootstrap/Spinner';
 
 import axios from 'axios';
 import 'react-widgets/dist/css/react-widgets.css';
+//Date Picker
 import { DateTimePicker } from 'react-widgets';
 import Moment from 'moment';
 import momentLocalizer from 'react-widgets-moment';
+import moment from 'moment';
+// React Notification
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Title from 'components/Title/CardTitle';
+import {url} from 'axios/url';
 // import CountryStates from './CountryStates';
-
+//Dtate Picker package
 Moment.locale('en');
 momentLocalizer();
 
@@ -56,21 +72,40 @@ momentLocalizer();
     button: {
       margin: theme.spacing(1),
     },
-    
+    root: {
+        flexGrow: 1,
+        maxWidth: 752,
+      },
+      demo: {
+        backgroundColor: theme.palette.background.default,
+      },
+      inline: {
+        display: 'inline',
+      },
     
   }));
 
 
 const PatientRegistration = (props) => {
     const classes = useStyles();
+    const apiUrl = url+"patients";
+    const apicountries = url+"countries";
+    const apistate = url+"state/country/";
+    //Getting List of Countries and State
+    const [countries, setCountries] = React.useState([]);
+    const [states, setStates] = React.useState([]);
+    const [provinces, setProvinces] = React.useState([]);
+    const [relatives, setRelatives] = useState([]);
+    const [relative, setRelative] = useState([{}]);
+    const relationshipTypes = [{id:"1", name:"Father"},{id:"2", name:"Mother"},
+    {id:"3", name:"Sister"},{id:"4", name:"Brother"}];
+
     const [patient, setPatient] = useState({ 
         hospitalNumber:'',
         firstName: '',
         lastName: '', 
         email:'',
-        dateRegistration: '',
         facilityId: '1',
-        dob:'',
         dobEstimated:'',
         educationId:'',
         genderId:'',
@@ -85,68 +120,137 @@ const PatientRegistration = (props) => {
         zipCode:'',
         stateId:'',
         street:'',
-    });  
-    
+        dob:'',
+        dateRegistration: new Date()
+});  
+    //console.log(patient);  
+    const newDatenow = moment(patient.dateRegistration).format('DD-MM-YYYY');
+    const newDob = moment(patient.dob).format('DD-MM-YYYY');
+    //console.log(date2);
     const [showLoading, setShowLoading] = useState(false);
-    const apiUrl = "http://10.167.4.185:8080/api/patients";
-  
+    //Saving of Patient Registration 
     const savePatient = (e) => {
-        //console.log(patient);
+      //toast.warn("Processing Registration");
       setShowLoading(true);
       e.preventDefault();
       const data = { 
-            hospitalNumber: patient.hospitalNumber,           
-            dateRegistration: "01:11:2020",
-            facilityId: '1',
-           
-            "person": {
-                firstName: patient.firstName,
-                lastName:  patient.lastName, 
-                email:patient.email,
-                dob:patient.dob,
-                maritalStatusId:patient.maritalStatusId,
-                occupationId:patient.occupationId,
-                genderId:patient.genderId,
-                educationId:patient.educationId,           
-            "personContact": {
-                address1:patient.address1,
-                city:'1',
-                countryId:'1',
-                zipCode:patient.zipCode,
-                stateId:'1',
-                street:patient.street,
-                provinceId: 1
-            },
-            "personRelatives": [
-            {
-                dobEstimated:patient.dobEstimated,
-                alternatePhoneNumber:patient.alternatePhoneNumber,               
-                landmark:patient.landmark,
-                provinceId:patient.provinceId,
-                
-            }
-        ],
-        "titleId":1
-        }
-    };
-        console.log(data);
+        hospitalNumber: patient.hospitalNumber,           
+        dateRegistration: newDatenow,
+        facilityId: '1',
+        firstName: patient.firstName,
+        lastName:  patient.lastName, 
+        email:patient.email,
+        dob:newDob,
+        maritalStatusId:patient.maritalStatusId,
+        occupationId:patient.occupationId,
+        genderId:patient.genderId,
+        educationId:patient.educationId,           
+        address1:patient.address1,
+        city:'1',
+        countryId:'1',
+        zipCode:patient.zipCode,
+        stateId:'1',
+        street:patient.street,
+        provinceId: 1,
+        personRelatives: relatives,
+        titleId:1
+        };
+    console.log(data);
+
       axios.post(apiUrl, data)
-        .then((result) => {
-            
+        .then((result) => {          
           setShowLoading(false);
-          props.history.push('/show/' + result.data._id)
-        }).catch((error) => setShowLoading(false));
+          props.history.push('/patients')
+          toast.success("Patient Registration Successful!");
+        }).catch((error) => {
+        setShowLoading(false)
+        }
+        );
     };
-  
+  //End of the Saving the Patient Registration
     const onChange = (e) => {
-      e.persist();
-      
+      e.persist();     
       setPatient({...patient, [e.target.name]: e.target.value});
     } 
+    //Get countries
+    useEffect(() => {
+        async function getCharacters() {
+            try{
+          const response = await fetch(apicountries);
+          const body = await response.json();          
+          setCountries(body.map(({ name, id }) => ({ label: name, value: id })));
+          const defaultCountryId = body.find(x => x.name === 'Nigeria').id;
+          setPatient({...patient, countryId: defaultCountryId});
+          setStateByCountryId(defaultCountryId);
+          }catch(error){
+              console.log(error);
+          }
+        }
+        getCharacters();
+      }, []);
+
+
+    //Get States from selected country 
+    const getStates = (e) => {
+        setPatient({...patient, [e.target.name]: e.target.value});
+        const getCountryId = e.target.value;
+        setStateByCountryId(getCountryId);
+    }
+
+    function setStateByCountryId (getCountryId) {
+        async function getCharacters() {
+            const response = await fetch(apistate+getCountryId);            
+            const stateList = await response.json();
+            setStates(stateList.map(({ name, id }) => ({ label: name, value: id })));
+          }
+          getCharacters();
+    }
+
+    //fetch province
+    const getProvinces = (e) => {
+        setPatient({...patient, [e.target.name]: e.target.value});
+        const stateId = e.target.value;
+        async function getCharacters() {
+            const response = await fetch("/api/province/state/"+stateId);
+            const provinceList = await response.json();
+            setProvinces(provinceList.map(({ name, id }) => ({ label: name, value: id })));
+          }
+          getCharacters();
+    }
+
+    function getRelationshipName(id) {
+        return relationshipTypes.find(x => x.id === id).name;
+    }
+    
+
+      const addRelative = value => {
+        const allRelatives = [...relatives,  value ];
+        setRelatives(allRelatives);
+      };
+      
+      const removeRelative = index => {
+        const allRelatives = [...relatives];
+        allRelatives.splice(index, 1);
+        setRelatives(allRelatives);
+      };
+
+      const handleAddRelative = e => {
+        e.preventDefault();
+        if (!relative) return;
+        addRelative(relative);
+        setRelative({email:"", firstName:"", lastName:"",
+            otherNames:"", relationshipTypeId:"", mobilePhoneNumber:"", address:""});
+      };
+
+      const onRelativeChange = e => {
+        //  e.preventDefault();
+        setRelative({...relative, [e.target.name]: e.target.value});
+       
+        }
 
   return (
     <Page title="Patient Regsitration" >
-        
+        <ToastContainer autoClose={2000} />
         <Alert color="primary">
         All Information with Asterisks(*) are compulsory 
       </Alert>
@@ -183,7 +287,9 @@ const PatientRegistration = (props) => {
                             <FormGroup>
                                 <Label for="middleName">Date Of Registration</Label>
                                 
-                                <DateTimePicker time={false} name="dateRegistration"  id="dateRegistration"   />
+                                <DateTimePicker time={false} name="dateRegistration"  id="dateRegistration"   value={patient.dateRegistration}   onChange={value1 => setPatient({...patient, dateRegistration: value1})}
+                                defaultValue={new Date()} max={new Date()}
+                                />
                             </FormGroup>
                             </Col>
                             
@@ -191,8 +297,8 @@ const PatientRegistration = (props) => {
                         <Row form>
                             <Col md={4}>
                             <FormGroup>
-                                <Label for="firstName">Fist Name</Label>
-                                <Input type="text" name="firstName" id="firstName" placeholder="First Name" value={patient.firstName} onChange={onChange}/>
+                                <Label for="firstName">First Name</Label>
+                                <Input type="text" name="firstName" id="firstName" placeholder="First Name" value={patient.firstName} onChange={onChange} />
                             </FormGroup>
                             </Col>
                             
@@ -205,7 +311,7 @@ const PatientRegistration = (props) => {
                             <Col md={4}>
                             <FormGroup>
                                 <Label for="lastName">Last Name </Label>
-                                <Input type="text" name="lastName" id="lastName" placeholder="Last Name" value={patient.lastName} onChange={onChange}/>
+                                <Input type="text" name="lastName" id="lastName" placeholder="Last Name" value={patient.lastName} onChange={onChange} />
                             </FormGroup>
                             </Col>
                         </Row>
@@ -214,7 +320,7 @@ const PatientRegistration = (props) => {
                             <Col md={4}>
                                 <FormGroup>
                                     <Label for="maritalStatus">Gender</Label>
-                                    <Input type="select" name="genderId" id="genderId" value={patient.genderId}  onChange={onChange}>
+                                    <Input type="select" name="genderId" id="genderId" value={patient.genderId} onChange={onChange} >
                                         <option value="1">Female</option>
                                         <option value="2">Male</option>
                                         
@@ -223,8 +329,8 @@ const PatientRegistration = (props) => {
                             </Col>
                             <Col md={4}>
                             <FormGroup>
-                                <Label for="occupation">Ocuupation</Label>
-                                <Input type="select" name="occupationId" id="occupationId" value={patient.occupationId}  onChange={onChange}>
+                                <Label for="occupation">Occupation</Label>
+                                <Input type="select" name="occupationId" id="occupationId" value={patient.occupationId} onChange={onChange}>
                                     <option value="1">Students</option>
                                     <option value="2">Business</option>
                                     <option value="3">Government</option>
@@ -251,7 +357,7 @@ const PatientRegistration = (props) => {
                             <FormGroup>
                                 <Label for="maritalStatus">Marital Status</Label>
                                 <Input type="select" name="maritalStatusId" id="maritalStatusId" value={patient.maritalStatusId} onChange={onChange}>
-                                    <option value="1">Signle</option>
+                                    <option value="1">Single</option>
                                     <option value="2">Married</option>
                                     <option value="3">Divorce</option>
                                 </Input>
@@ -260,7 +366,7 @@ const PatientRegistration = (props) => {
                             <Col md={4}>
                             <FormGroup >
                                 <Label>Date OF Birth</Label>
-                                <DateTimePicker time={false} name="dob"  dropUp  />
+                                <DateTimePicker time={false} name="dob"  dropUp onChange={value1 => setPatient({...patient, dob: value1})} max={new Date()} />
 
                             </FormGroup>
                             </Col>
@@ -269,20 +375,20 @@ const PatientRegistration = (props) => {
                                 <Row form>
                                         <Col md={4}>
                                         <FormGroup>
-                                            <Label for="phoneNumber">Year</Label>
-                                            <Input type="text" name="year" id="year" placeholder="Year" value={patient.Estimate}  onChange={onChange}/>
+                                            <Label for="year">Year</Label>
+                                            <Input type="text" name="year" id="year" placeholder="Year" value={patient.Estimate} onChange={onChange} />
                                         </FormGroup>
                                         </Col>
                                         <Col md={4}>
                                         <FormGroup>
-                                            <Label for="phoneNumber">Months</Label>
-                                            <Input type="text" name="months" id="months" placeholder="Months" value={patient.EstimateMonths}  onChange={onChange}/>
+                                            <Label for="year">Months</Label>
+                                            <Input type="text" name="months" id="months" placeholder="Months" value={patient.EstimateMonths} onChange={onChange} />
                                         </FormGroup>
                                         </Col>
                                         <Col md={4}>
                                         <FormGroup>
-                                            <Label for="phoneNumber">Days</Label>
-                                            <Input type="text" name="days" id="days" placeholder="Days" value={patient.EstimateDays}  onChange={onChange}/>
+                                            <Label for="year">Days</Label>
+                                            <Input type="text" name="days" id="days" placeholder="Days" value={patient.EstimateDays} onChange={onChange} />
                                         </FormGroup>
                                         </Col>
                                 </Row>
@@ -290,7 +396,9 @@ const PatientRegistration = (props) => {
                             <Col md={4}>
                             <FormGroup check>
                                 <Label></Label>
-                                <Input type="checkbox" />Estimates Date of  Birth
+                                <Input type="checkbox" 
+                                
+                                />Estimates Date of  Birth
                                
                             </FormGroup>
                             </Col>
@@ -313,7 +421,8 @@ const PatientRegistration = (props) => {
                             <Col md={4}>
                             <FormGroup>
                                 <Label for="phoneNumber">Phone Number</Label>
-                                <Input type="text" name="mobilePhoneNumber" id="mobilePhoneNumber" placeholder="Phone Number" value={patient.mobilePhoneNumber}  onChange={onChange}/>
+                                <Input type="text" name="phoneNumber" id="phoneNumber" placeholder="Phone Number" value={patient.mobilePhoneNumber} 
+                                onChange={onChange} />
                             </FormGroup>
                             </Col>
                             <Col md={4}>
@@ -325,7 +434,7 @@ const PatientRegistration = (props) => {
                             <Col md={4}>
                             <FormGroup>
                                 <Label for="emailAddress">Email Address</Label>
-                                <Input type="email" name="email" id="email" placeholder="Email Address" value={patient.email}  onChange={onChange}/>
+                                <Input type="email" name="email" id="email" placeholder="Email Address" value={patient.email} onChange={onChange}  />
                             </FormGroup>
                             </Col>
                         </Row>
@@ -345,27 +454,42 @@ const PatientRegistration = (props) => {
             <Title > Address <br/></Title>
                 
                         <Row form>
-                                <Col md={3}>
+                                <Col md={4}>
                                     <FormGroup>
                                         <Label for="country">Country</Label>
-                                        <Input type="select" name="countryId" id="countryId" value={patient.countryId}  onChange={onChange}>
-                                            <option value="1">Africa</option>
-                                            <option value="2">Asia</option>
-                                            <option value="3">America</option>
-                                        </Input>
+                                            <Input type="select" name="countryId" id="countryId" value={patient.countryId}  onChange={getStates}>
+                                                {countries.map(({ label, value }) => (
+                                                <option key={value} value={value}>
+                                                {label}
+                                                </option>
+                                                ))}
+                                            </Input>
+
                                     </FormGroup>
                                 </Col>
                                 
-                                <Col md={3}>
+                                <Col md={4}>
                                 <FormGroup>
-                                    <Label for="stressAddress">Street Address</Label>
-                                    <Input type="text" name="street" id="street" placeholder="Stress Address" value={patient.street} onChange={onChange}/>
+                                    <Label for="stressAddress">State</Label>
+                                    <Input type="select" name="stateId" id="stateId" placeholder="Select State" value={patient.stateId} onChange={getProvinces}>
+                                        {states.map(({ label, value }) => (
+                                            <option key={value} value={value}>
+                                            {label}
+                                            </option>
+                                        ))}
+                                    </Input>
                                 </FormGroup>
                             </Col>
-                            <Col md={3}>
+                            <Col md={4}>
                             <FormGroup>
-                                <Label for="city">City</Label>
-                                <Input type="text" name="city" id="city" placeholder="City" value={patient.city}  onChange={onChange}/>
+                                <Label for="lga">Province/District/LGA </Label>
+                                <Input type="select" name="provinceId" id="provinceId" placeholder="Select Province" value={patient.provinceId} onChange={onChange}>
+                                        {provinces.map(({ label, value }) => (
+                                            <option key={value} value={value}>
+                                            {label}
+                                            </option>
+                                        ))}
+                                    </Input>
                             </FormGroup>
                             </Col>
                             
@@ -373,16 +497,13 @@ const PatientRegistration = (props) => {
                         </Row>
                         
                         <Row form>
-                            <Col md={4}>
+                        <Col md={4}>
                             <FormGroup>
-                                <Label for="lga">Province/District/LGA </Label>
-                                <Input type="select" name="provinceId" id="provinceId" value={patient.provinceId}  onChange={onChange}>
-                                    <option value="1">Ogun</option>
-                                    <option value="2">Business</option>
-                                    <option value="3">Government</option>
-                                </Input>
+                                <Label for="city">Street Address</Label>
+                                <Input type="text" name="city" id="city" placeholder="City" value={patient.city}  onChange={onChange}/>
                             </FormGroup>
                             </Col>
+                            
                             <Col md={4}>
                             <FormGroup>
                                 <Label for="landMark">Land Mark</Label>
@@ -404,69 +525,93 @@ const PatientRegistration = (props) => {
                         Relatives 
                         <MatButton
                             variant="contained"
-                            color="primary" className=" float-right mr-1"  startIcon={<FaPlusSquare />}>
+                            color="primary" className=" float-right mr-1"  startIcon={<FaPlusSquare />}  onClick={handleAddRelative}>
                             Add Relative 
                         </MatButton> 
                    
                     </Title>
                     <br/>
                             <Row form>
-                                <Col md={4}>
+                            <Col md={3}>
+                            <FormGroup>
+                                <Label for="occupation">Relationship Type</Label>
+                                <Input type="select" name="relationshipTypeId" id="relationshipTypeId" value={relative.relationshipTypeId} onChange={onRelativeChange}  >
+                                <option value="">Select Relative Relationship Type</option>
+                                {relationshipTypes.map(({ id, name }) => (
+                                                <option key={id} value={id}>
+                                                {name}
+                                                </option>
+                                                ))}
+                                </Input>
+                            </FormGroup>
+                            </Col>
+                                <Col md={3}>
                                 <FormGroup>
-                                    <Label for="firstName">Fist Name</Label>
-                                    <Input type="text" name="relativeFirstName" id="relativeFirstName" value={patient.relativeFirstName}  placeholder="First Name" onChange={onChange}/>
+                                    <Label for="firstName">First Name</Label>
+                                    <Input type="text" name="firstName" id="firstName" value={relative.firstName}  placeholder="First Name" onChange={onRelativeChange}/>
                                 </FormGroup>
                                 </Col>
-                                <Col md={4}>
+                                <Col md={3}>
                                 <FormGroup>
                                     <Label for="middleName">Middle Name</Label>
-                                    <Input type="text" name="relativeMiddleName" id="relativeMiddleName" placeholder="Middle Name"  value={patient.relativeMiddleName} onChange={onChange}/>
+                                    <Input type="text" name="otherNames" id="otherNames" placeholder="Middle Name"  value={relative.otherNames} onChange={onRelativeChange}/>
                                 </FormGroup>
                                 </Col>
-                                <Col md={4}>
+                                <Col md={3}>
                                 <FormGroup>
                                     <Label for="lastName">Last Name </Label>
-                                    <Input type="text" name="relativeLastName" id="relativeLastName" placeholder="Last Name" value={patient.relativeLastName} onChange={onChange}/>
+                                    <Input type="text" name="lastName" id="lastName" placeholder="Last Name" value={relative.lastName} onChange={onRelativeChange}/>
                                 </FormGroup>
                                 </Col>
                             </Row>
                             
                             <Row form>
-                                <Col md={4}>
+                                <Col md={3}>
                                 <FormGroup>
-                                    <Label for="phoneRelative">Phone No.</Label>
-                                    <Input type="text" name="phoneRelative" id="phoneRelative" placeholder="Relative Phone No." value={patient.phoneRelative} onChange={onChange}/>
+                                    <Label for="relativePhoneNumber">Phone No.</Label>
+                                    <Input type="text" name="relativePhoneNumber" id="relativePhoneNumber" placeholder="Relative Phone No." value={relative.mobilePhoneNumber} onChange={e => setRelative({...relative, mobilePhoneNumber: e.target.value})}/>
                                 </FormGroup>
                                 </Col>
-                                <Col md={4}>
+                                <Col md={3}>
                                 <FormGroup>
-                                    <Label for="relativeEmail">Email Address</Label>
-                                    <Input type="text" name="relativeEmail" id="relativeEmail" placeholder="Relative Email Address" onChange={onChange}/>
+                                    <Label for="email">Email Address</Label>
+                                    <Input type="text" name="email" id="email" placeholder="Relative Email Address" value={relative.email} onChange={onRelativeChange}/>
                                 </FormGroup>
                                 </Col>
-                                <Col md={4}>
+                                <Col md={6}>
                                 <FormGroup>
-                                    <Label for="relativeAddress">Physical Address</Label>
-                                    <Input type="text" name="relativeAddress" id="relativeAddress" placeholder="Relative Physical Address" onChange={onChange}/>
+                                    <Label for="address">Address</Label>
+                                    <Input type="text" name="address" id="address" placeholder="Relative Address" onChange={onRelativeChange} value={relative.address}/>
                                 </FormGroup>  
                                 </Col>
                             </Row>
-                            
-                            {/* <Button
-                                variant="contained"
-                                color="primary"
-                                className={classes.button}
-                                startIcon={<SaveIcon />}
-                            >
-                                Save
-                            </Button>
-                            <Button
-                                    
-                                    className={classes.button}
-                                    startIcon={<CancelIcon />}
-                                >
-                                Cancel
-                            </Button>   */}
+                            <Row>
+                            <Col md={12}>
+                            <div className={classes.demo}>
+                            <List>
+                            {relatives.map((relative, index) => (
+                            <RelativeList
+                            key={index}
+                            index={index}
+                            relative={relative}
+                            removeRelative={removeRelative}
+                            relationshipTypeName={getRelationshipName(relative.relationshipTypeId)}
+                            />
+                            ))}
+                            </List>
+                        </div>
+                        </Col>
+                            </Row>
+                            <Row>
+                            <Col md={12}>
+                            {showLoading && 
+                                
+                                <Spinner animation="border" role="status">
+                                <span className="sr-only">Loading...</span>
+                                </Spinner> 
+                            } 
+                            </Col> 
+                            </Row>
                              <MatButton  
                                 type="submit" 
                                 variant="contained"
@@ -485,11 +630,7 @@ const PatientRegistration = (props) => {
                                 Cancel
                             </MatButton>  
 
-                            {showLoading && 
-                                <Spinner animation="border" role="status">
-                                <span className="sr-only">Loading...</span>
-                                </Spinner> 
-                            }      
+                                
                     </CardContent>
                 </Card>
                 </Col>
@@ -499,4 +640,37 @@ const PatientRegistration = (props) => {
   );
 };
 
+
+function RelativeList ({ relative, index, removeRelative, relationshipTypeName }) {
+
+    return (
+        <ListItem>
+                  <ListItemText
+                    primary={ <React.Fragment>
+                        {relationshipTypeName}, {relative.firstName} {relative.otherNames} {relative.lastName}</React.Fragment> }
+                    secondary={
+                      <React.Fragment>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                         
+                          color="textPrimary"
+                        >
+                        {relative.mobilePhoneNumber} {relative.email} <br></br>
+                        </Typography>
+                        {relative.address}
+                      </React.Fragment>
+                    }
+                  />
+                  
+                  <ListItemSecondaryAction  onClick={() => removeRelative(index)}>
+                    <IconButton edge="end" aria-label="delete">
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                
+                
+    );
+  } 
 export default PatientRegistration;

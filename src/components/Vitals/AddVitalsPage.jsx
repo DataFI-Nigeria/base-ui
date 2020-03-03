@@ -1,17 +1,38 @@
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
+import React, {useState} from 'react';
+import MatButton from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Card,
     CardContent,
 }
     from '@material-ui/core';
+import {
+    Col,
+    FormGroup,
+    Input,
+    Label,
+    Row,
+  } from 'reactstrap';
 import Title from 'components/Title/CardTitle';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
+import Spinner from 'react-bootstrap/Spinner';
+// React Notification
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+//Date Picker
+import 'react-widgets/dist/css/react-widgets.css';
+import { DateTimePicker } from 'react-widgets';
+import Moment from 'moment';
+import momentLocalizer from 'react-widgets-moment';
+import moment from 'moment';
 
+import axios from 'axios';  
+import {url} from 'axios/url';
+
+//Dtate Picker package
+Moment.locale('en');
+momentLocalizer();
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -47,135 +68,171 @@ const useStyles = makeStyles(theme => ({
         display: 'none',
     },
 }));
-
-export default function SignUp() {
+ 
+export default function AddVitalsPage(props) {
     const classes = useStyles();
 
+    //Save Vitals 
+        const [vitals, setVitals] = useState({ 
+                formName: 'VITALS_SIGN_FORM', 
+                patientId: props.patient.patientId, 
+                serviceName:'CLINICAL_SERVICE', 
+                visitId:props.patient.checkInId, 
+                dateEncounter:new Date() 
+            }); 
+        const [formDataForVitals, setformDataForVitals] = useState({pulse:"", respiratoryRate:"", temperature:"", diastolic:"", systolic:"", bodyWeight:"", height:""}) 
+        const [showLoading, setShowLoading] = useState(false);  
+        const apiUrl = url+"encounters";   
+
+        const SaveVitals = (e) => { 
+            console.log('the save button is call'); 
+        e.preventDefault();  
+        const newDatenow = moment(vitals.dateEncounter).format('DD-MM-YYYY');
+        const data = { 
+                formName: 'VITALS_SIGN_FORM', 
+                patientId:vitals.patientId, 
+                serviceName:'CLINICAL_SERVICE' ,
+                visitId:vitals.visitId,
+                formData:formDataForVitals,
+                dateEncounter:newDatenow
+        };  
+        console.log(data);
+        axios.post(apiUrl, data)
+            .then((result) => {          
+                setShowLoading(false);
+                props.history.push('/checkedin-patients')
+                toast.success("Patient Checked In was Successful!");
+                console.log(result);
+            }).catch((error) => {
+                console.log(error);
+            setShowLoading(false)
+            setVitals(false);
+            // console.log("Error in CreateBook!");
+            //toast.error("Something went wrong!");
+            }
+            ); 
+        };
+
+    const onChangeFormdata = (e) => {
+        e.persist();     
+        setformDataForVitals({...formDataForVitals, [e.target.name]: e.target.value});
+        } 
+
+
     return (
-            <form className={classes.form} Validate>
+        
+            <form className={classes.form} onSubmit={SaveVitals}>
+                <ToastContainer autoClose={2000} />
                 <Card className={classes.cardBottom}>
                     <CardContent>
-                        <Title >New Vitals Signs
+                        <Title >New Vitals Signs --- {props.patient.hospitalNumber}
                         </Title>
                         <br/>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="date"
-                                    name="date"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="visitdate"
-                                    label="Date of Visit"
-                                    autoFocus
-                                    size="small"
-                                    helperText="provide Date of Visit"
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="pulse"
-                                    name="pulse"
-                                    variant="outlined"
-                                    fullWidth
-                                    id="pulse"
-                                    label="Pulse(bpm)"
-                                    size="small"
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="respiration"
-                                    name="respiration"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="respiration(bpm)"
-                                    label="Respiratory Rate"
-                                    size="small"
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="temperature"
-                                    name="temperature"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="temperature"
-                                    label="Temperature(c)"
-                                    size="small"
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="bloodpressure"
-                                    name="bloodpressure"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="bpressure"
-                                    label="Blood Pressure(mmHg)"
-                                    size="small"
-                                    helperText="Diatolic"
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="bloodpressure"
-                                    name="bloodpressure"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="bloodpressure"
-                                    label="Blood Pressure(mmHg)"
-                                    size="small"
-                                    helperText="Sytolic"
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="weight"
-                                    name="weight"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="weight"
-                                    label="Wight(kg)"
-                                    size="small"
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="height"
-                                    name="height"
-                                    variant="outlined"
-                                    required
-                                    fullWidth
-                                    id="height"
-                                    label="Height(cm)"
-                                    size="small"
-                                />
-                            </Grid>
-                        </Grid>
+
+                        <Row form>
+                            <Col md={6}>
+                            <FormGroup>
+                                <Label for="hospitalNumber">Date of Vitals</Label>
+                                <DateTimePicker time={false} name="dateEncounter"  id="dateEncounter"   value={vitals.dateEncounter}   onChange={value1 => setVitals({...vitals, dateEncounter: value1})}
+                                defaultValue={new Date()} max={new Date()}
+                            />
+                            </FormGroup>
+                            </Col>
+                            
+                            <Col md={6}>
+                            <FormGroup>
+                                <Label for="middleName">Pulse(bpm)</Label>
+                                
+                                <Input type="text" name="pulse" id="pulse" placeholder="Pulse(bpm) " value={formDataForVitals.pulse}
+                                    onChange={onChangeFormdata}/>
+                            </FormGroup>
+                            </Col>
+                            
+                        </Row>
+                        <Row form>
+                            <Col md={6}>
+                            <FormGroup>
+                                <Label for="middleName">Pulse(bpm)</Label>
+                                
+                                <Input type="text" name="respiratoryRate" id="respiratoryRate" placeholder="respiration(bpm)" value={formDataForVitals.respiratoryRate}
+                                    onChange={onChangeFormdata}/>
+                            </FormGroup>
+                            </Col>
+                            <Col md={6}>
+                            <FormGroup>
+                                <Label for="hospitalNumber">Blood Pressure(mmHg)</Label>
+                                <Input type="text" name="diastolic" id="diastolic" placeholder="Blood Pressure(mmHg)"  value={formDataForVitals.diastolic}
+                                    onChange={onChangeFormdata}/>
+                            </FormGroup>
+                            </Col>
+                        </Row>
+                        <Row form>                           
+                            <Col md={6}>
+                            <FormGroup>
+                                <Label for="middleName">Pulse(bpm)</Label>
+                                
+                                <Input type="text" name="systolic" id="systolic" placeholder="Blood Pressure(mmHg)"  value={formDataForVitals.systolic}
+                                    onChange={onChangeFormdata}/>
+                            </FormGroup>
+                            </Col>
+                            <Col md={6}>
+                            <FormGroup>
+                                <Label for="middleName">Temparature</Label>
+                                
+                                <Input type="text" name="temperature" id="temperature" placeholder="Temperature(c)" value={formDataForVitals.temperature}
+                                    onChange={onChangeFormdata}/>
+                            </FormGroup>
+                            </Col>
+                           
+                        </Row>
+                        <Row form>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="middleName">Weight Kg</Label>
+                                
+                                <Input type="text" name="bodyWeight" id="bodyWeight" placeholder="Wight(kg)" value={formDataForVitals.bodyWeight}
+                                    onChange={onChangeFormdata}/>
+                            </FormGroup>
+                            </Col>
+                            <Col md={6}>
+                            <FormGroup>
+                                <Label for="middleName">Height</Label>
+                                
+                                <Input type="text" name="height" id="height" placeholder="Height(cm)" value={formDataForVitals.height}
+                                    onChange={onChangeFormdata}/>
+                            </FormGroup>
+                            </Col>
+                        </Row>
+
+
+                        <Row>
+                            <Col md={12}>
+                            {showLoading && 
+                                
+                                <Spinner animation="border" role="status">
+                                <span className="sr-only">Loading...</span>
+                                </Spinner> 
+                            } 
+                            </Col> 
+                        </Row>
                         <br/>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            className={classes.button}
-                            startIcon={<SaveIcon />}
-                        >
-                            Save
-                        </Button>
-                        <Button
+                        <MatButton  
+                                type="submit" 
+                                variant="contained"
+                                color="primary"
+                                className={classes.button}
+                                startIcon={<SaveIcon />}
+                             >
+                                Save
+                        </MatButton>
+                        <MatButton
                             variant="contained"
                             color="default"
                             className={classes.button}
                             startIcon={<CancelIcon />}
                         >
                             Cancel
-                        </Button>
+                        </MatButton>
                     </CardContent>
                 </Card>
             </form>

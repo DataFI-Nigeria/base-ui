@@ -1,6 +1,7 @@
 
 import React from 'react';  
-
+import {Link} from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';  
 
 import Paper from '@material-ui/core/Paper';  
@@ -17,27 +18,27 @@ import TableHead from '@material-ui/core/TableHead';
 
 import TablePagination from '@material-ui/core/TablePagination';  
 
-import TableRow from '@material-ui/core/TableRow';  
+import TableRow from '@material-ui/core/TableRow';    
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import {
+  FaPencilAlt
+} from 'react-icons/fa';
+import {
+  MdDeleteForever
+} from 'react-icons/md';
 
-import axios from 'axios';    
-
-import { useState, useEffect } from 'react'   
+import axios from 'axios';
+import {url} from 'axios/url';
+  
 
 const useStyles = makeStyles({  
-
   root: {  
-
     width: '100%',  
-
   },  
-
   container: {  
-
     maxHeight: 440,  
   }, 
-  
-  
-
 });  
 const StyledTableCell = withStyles(theme => ({
   head: {
@@ -58,21 +59,15 @@ const StyledTableRow = withStyles(theme => ({
 
   
 
-export default function MatPaginationTable() {  
+export default function PatientList(props) {  
   const classes = useStyles();  
-
   const [page, setPage] = React.useState(0);  
-
   const [data, setData] = useState([]);   
-
   const [rowsPerPage, setRowsPerPage] = React.useState(5);  
-
-  useEffect(() => {    
-
+  const apistate = url+"patients";
+      useEffect(() => {    
         const GetData = async () => {    
-
-          const result = await axios('http://10.167.4.185:8080/api/patients');    
-
+          const result = await axios(apistate);    
           setData(result.data);  
           console.log(result.data);   
         }  
@@ -87,13 +82,12 @@ export default function MatPaginationTable() {
   };  
 
   const handleChangeRowsPerPage = event => {  
-
     setRowsPerPage(+event.target.value);  
-
     setPage(0);  
-
   };  
 
+  
+  
   return (  
 
     <Paper className={classes.root}>  
@@ -108,13 +102,13 @@ export default function MatPaginationTable() {
 
               <StyledTableCell>Patient ID</StyledTableCell>  
 
-              <StyledTableCell align="right">Patient Name</StyledTableCell>  
+              <StyledTableCell align="center">Patient Name</StyledTableCell>  
 
-              <StyledTableCell align="right">Phone Number</StyledTableCell>  
+              <StyledTableCell align="center">Phone Number</StyledTableCell>  
 
-              <StyledTableCell align="right">Age </StyledTableCell>  
+              <StyledTableCell align="center">Age </StyledTableCell>  
 
-              <StyledTableCell align="right">Action</StyledTableCell>  
+              <StyledTableCell align="center">Action</StyledTableCell>  
 
  
 
@@ -127,23 +121,40 @@ export default function MatPaginationTable() {
             {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {  
               return (  
 
-           <StyledTableRow >  
+                <StyledTableRow >  
 
-                <TableCell component="th" scope="row">  
+                      <TableCell component="th" scope="row" align="left">  
 
-                  {row.id}  
+                        {row.id}  
 
-                </TableCell>  
-                <TableCell align="right">{row.name}</TableCell>  
+                      </TableCell>  
+                      <TableCell align="center">{row.firstName} {' '} {row.lastName}</TableCell>  
 
-                <TableCell align="right">{row.email}</TableCell>  
+                      <TableCell align="center">{row.mobilePhoneNumber}</TableCell>  
 
-                <TableCell align="right">{row.username}</TableCell>  
+                      <TableCell align="center">{row.dob}</TableCell>  
 
-                <TableCell align="right">{row.website}</TableCell>  
- 
+                      <TableCell align="center">
+                       
+                      <Link to={"/edit-patient/"+row.id}>
+                          <Tooltip title="Edit Patient">
+                            <IconButton aria-label="Collect Sample" >
+                              <FaPencilAlt size={20}/>
+                            </IconButton>
+                           
+                          </Tooltip>
+                        </Link>  
+                          <Tooltip title="Achieve Patient">
+                            <IconButton aria-label="Collect Sample">
+                              < MdDeleteForever
+                              size={20} />
+                            </IconButton>
+                          </Tooltip>
+                          
+                      </TableCell>  
+      
 
-              </StyledTableRow>  
+                    </StyledTableRow>  
 
                  
 

@@ -18,7 +18,7 @@ import { TiWarningOutline } from "react-icons/ti";
 import { makeStyles } from '@material-ui/core/styles';
 import SearchInput from 'components/SearchBox/SearchInput';
 import Title from 'components/Title/CardTitle';
-import CheckInSearch from './CheckInSearch';
+import CheckInList from './CheckInList';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -30,8 +30,11 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const PatientPage = () => {
+
+
+const PatientPage = (props) => {
     const classes = useStyles();
+
     return (
         <Page title="Check In" >
             <Alert color="primary">
@@ -43,7 +46,7 @@ const PatientPage = () => {
             <Card className={classes.cardBottom}>
                 <CardContent>
                     <Title>
-                        <Link to="/checkin-search">
+                        <Link to="/checkedin-patients">
                             <Button
                                 variant="contained"
                                 color="primary" className=" float-right mr-1">
@@ -58,7 +61,7 @@ const PatientPage = () => {
                         <SearchInput />
                     </Form>
                     <br/>
-                    <CheckInSearch />
+                    <CheckInList />
                 </CardContent>
             </Card>
         </Page>

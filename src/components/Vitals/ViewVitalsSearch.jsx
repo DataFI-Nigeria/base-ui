@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useState, useEffect} from 'react';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -12,7 +12,10 @@ import IconButton from '@material-ui/core/IconButton';
 import {
     FaPencilAlt
 } from 'react-icons/fa';
+
 import {Modal, ModalBody, ModalHeader} from 'reactstrap';
+import axios from 'axios'; 
+import {url} from 'axios/url';
 import AddVitalsPage from 'components/Vitals/AddVitalsPage';
 
 const useStyles = makeStyles({
@@ -20,40 +23,65 @@ const useStyles = makeStyles({
         minWidth: 650,
     },
 });
+const StyledTableCell = withStyles(theme => ({
+    head: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white,
+    },
+    body: {
+      fontSize: 11,
+    },
+  }))(TableCell);
+  const StyledTableRow = withStyles(theme => ({
+    root: {
+      '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.background.default,
+      },
+    },
+  }))(TableRow);
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-    createData('1598', 159, 6.0, 24, 4.0),
-    createData('1234', 237, 9.0, 37, 4.3),
-    createData('5555', 262, 16.0, 24, 6.0),
-];
 
 export default function DataTableList(props) {
     const classes = useStyles();
     const [modal, setModal] = useState(false);
     const toggle = () => setModal(!modal);
 
+      //Get list of Visit/checkin patients API 
+      const [data, setData] = useState([]); 
+      const apipatient = url+"patients";
+      useEffect(() => {    
+              const GetData = async () => {    
+              const result = await axios(apipatient);    
+              setData(result.data);    
+              }  
+              GetData();     
+  
+      }, []); 
+      //get the user that need to be checked in 
+     const [patientrow, setpatientValue] = useState();
+      const getUsermodal = (patientrow)=> {
+        // setuservalue(user);
+        setModal(!modal);
+      
+      }
     return (
         <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="caption table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Date</TableCell>
-                        <TableCell align="center">Pulse(bpm)</TableCell>
-                        <TableCell align="center">Respiratory(bpm)</TableCell>
-                        <TableCell align="center">Temperature(c)</TableCell>
-                        <TableCell align="center">Blood Pressure</TableCell>
-                        <TableCell align="center">Weight(kg)</TableCell>
-                        <TableCell align="center">Height(cm)</TableCell>
-                        <TableCell align="center">Action</TableCell>
+                        <StyledTableCell>Date</StyledTableCell>
+                        <StyledTableCell align="center">Pulse(bpm)</StyledTableCell>
+                        <StyledTableCell align="center">Respiratory(bpm)</StyledTableCell>
+                        <StyledTableCell align="center">Temperature(c)</StyledTableCell>
+                        <StyledTableCell align="center">Blood Pressure</StyledTableCell>
+                        <StyledTableCell align="center">Weight(kg)</StyledTableCell>
+                        <StyledTableCell align="center">Height(cm)</StyledTableCell>
+                        <StyledTableCell align="center">Action</StyledTableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map(row => (
-                        <TableRow key={row.name}>
+                    {data.map(row => (
+                        <StyledTableRow key={row.name}>
                             <TableCell component="th" scope="row">
                                 {row.name}
                             </TableCell>
@@ -65,17 +93,27 @@ export default function DataTableList(props) {
                             <TableCell align="center">{row.carbs}</TableCell>
                             <TableCell align="center">
                                 <Tooltip title="Edit Vitals">
-                                        <IconButton aria-label="Collect Sample">
-                                            <FaPencilAlt size={20} onClick={toggle}/>
+                                        <IconButton aria-label="Collect Sample" 
+                                            onClick={() => {
+                                            getUsermodal(setpatientValue(row.firstName));
+
+                                            }}>
+                                            <FaPencilAlt size={20}  />
                                         </IconButton>
                                 </Tooltip>
                             </TableCell>
-                        </TableRow>
+                        </StyledTableRow>
                     ))}
-                    <Modal isOpen={modal} toggle={toggle}  size='lg'>
+                    <Modal isOpen={modal} toggle={toggle} size='lg'>
+                        <ModalHeader toggle={toggle}>Add New Vitals</ModalHeader>
+                        <ModalBody>
+                           
+                        </ModalBody>
+                    </Modal>
+                    <Modal isOpen={modal}   size='lg'>
                         <ModalHeader toggle={toggle}>Edit Patient Vitals</ModalHeader>
                         <ModalBody>
-                            <AddVitalsPage />
+                                <AddVitalsPage patient={patientrow}/>
                         </ModalBody>
                     </Modal>
                 </TableBody>

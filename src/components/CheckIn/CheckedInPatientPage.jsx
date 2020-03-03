@@ -3,9 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
     Button,
-
     Form,
-
     Alert
 } from 'reactstrap';
 import {
@@ -19,11 +17,11 @@ import { TiWarningOutline } from "react-icons/ti";
 import { makeStyles } from '@material-ui/core/styles';
 import SearchInput from 'components/SearchBox/SearchInput';
 import Title from 'components/Title/CardTitle';
-import ViewCheckedIn from 'components/CheckIn/ViewCheckedIn';
+import CheckedInPatientList from 'components/CheckIn/CheckedInPatientList';
 
 import {
-    MdKeyboardBackspace,
-} from 'react-icons/md';
+    TiArrowBack,
+} from 'react-icons/ti';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -38,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 const PatientPage = () => {
     const classes = useStyles();
     return (
-        <Page title="Check In" >
+        <Page title="Checked In" >
             <Alert color="primary">
                 <TiWarningOutline
                     size="30"
@@ -50,8 +48,9 @@ const PatientPage = () => {
                     <Title >All CheckedIn Patient
                         <Link to="/checkin">
                             <Button color="primary" className=" float-right mr-1" >
-                                <MdKeyboardBackspace/> Go Back
+                                <TiArrowBack/> Go Back
                             </Button>
+                            
                         </Link>
                     </Title>
                     <br/>
@@ -61,7 +60,7 @@ const PatientPage = () => {
                         <SearchInput />
                     </Form>
                     <br/>
-                    <ViewCheckedIn />
+                    <CheckedInPatientList />
                 </CardContent>
             </Card>
         </Page>
