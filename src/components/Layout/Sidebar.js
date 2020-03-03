@@ -47,8 +47,6 @@ const navComponents = [
   },
 ];
 
-
-
 const pageContents = [
   { to: '/pending-prescription', name: 'Pending Prescription', exact: false, Icon: FaUserPlus },
   {
@@ -71,15 +69,15 @@ const PagesAnc = [
 const PagesHiv = [
   { to: '/enrollment-list', name: 'Enrollment', exact: false, Icon: GiTreeBeehive },
   {
-    to: '/hiv-clinic',
+    to: '/art-clinic',
     name: 'Clinic',
     exact: false,
     Icon: FaUserPlus,
   },
-  { to: '/hts', name: 'HTS', exact: false, Icon: GiTreeBeehive },
+  { to: '/hts-list', name: 'HTS', exact: false, Icon: GiTreeBeehive },
   { to: '/case-management', name: 'Case Management', exact: false, Icon: GiTreeBeehive },
   { to: '/pmtct', name: 'PMTCT', exact: false, Icon: GiTreeBeehive },
-  { to: '/index-tracking', name: 'Index Contract Tracking', exact: false, Icon: GiTreeBeehive },
+  { to: '/index-Search', name: 'Index Contract Tracking', exact: false, Icon: GiTreeBeehive },
   { to: '/client-status', name: 'Client Status Update', exact: false, Icon: GiTreeBeehive },
 ];
 
@@ -87,8 +85,8 @@ const navItems = [
   { to: '/dashboard', name: 'Dashboard', exact: true, Icon: MdDashboard },
   { to: '/patients', name: 'Registration', exact: false, Icon: FaUsers },
   { to: '/checkin', name: 'Check IN', exact: false, Icon: FaXRay },
-  { to: '/testpage', name: 'Test Page', exact: false, Icon: FaXRay },
-  { to: '/testpage2', name: 'Test Page 2', exact: false, Icon: FaXRay },
+  // { to: '/testpage', name: 'Test Page', exact: false, Icon: FaXRay },
+  // { to: '/testpage2', name: 'Test Page 2', exact: false, Icon: FaXRay },
 ];
 
 const bem = bn.create('sidebar');
@@ -140,8 +138,7 @@ class Sidebar extends React.Component {
                   tag={NavLink}
                   to={to}
                   activeClassName="active"
-                  exact={exact}
-                >
+                  exact={exact}>
                   <Icon className={bem.e('nav-item-icon')} />
                   <span className="">{name}</span>
                 </BSNavLink>
@@ -150,8 +147,7 @@ class Sidebar extends React.Component {
     {/* The General Clinic Menu  */}
           <NavItem
               className={bem.e('nav-item')}
-              onClick={this.handleClick('PageGeneralClinic')}
-            >
+              onClick={this.handleClick('PageGeneralClinic')}>
               <BSNavLink className={bem.e('nav-item-collapse')}>
                 <div className="d-flex">
                   <MdPages className={bem.e('nav-item-icon')} />
@@ -189,8 +185,7 @@ class Sidebar extends React.Component {
       {/* The Laboratory Menu  */}
             <NavItem
               className={bem.e('nav-item')}
-              onClick={this.handleClick('Components')}
-            >
+              onClick={this.handleClick('Components')}>
               <BSNavLink className={bem.e('nav-item-collapse')}>
                 <div className="d-flex">
                   <MdExtension className={bem.e('nav-item-icon')} />
@@ -228,8 +223,7 @@ class Sidebar extends React.Component {
        {/* The Pharmacy Menu  */}         
             <NavItem
               className={bem.e('nav-item')}
-              onClick={this.handleClick('Pages')}
-            >
+              onClick={this.handleClick('Pages')}>
               <BSNavLink className={bem.e('nav-item-collapse')}>
                 <div className="d-flex">
                   <MdPages className={bem.e('nav-item-icon')} />
@@ -256,8 +250,7 @@ class Sidebar extends React.Component {
                     tag={NavLink}
                     to={to}
                     activeClassName="active"
-                    exact={exact}
-                  >
+                    exact={exact}>
                     <Icon className={bem.e('nav-item-icon')} />
                     <span className="">{name}</span>
                   </BSNavLink>
@@ -273,8 +266,7 @@ class Sidebar extends React.Component {
       {/* The HIV Menu  */}  
             <NavItem
               className={bem.e('nav-item')}
-              onClick={this.handleClick('PagesHiv')}
-            >
+              onClick={this.handleClick('PagesHiv')}>
               <BSNavLink className={bem.e('nav-item-collapse')}>
                 <div className="d-flex">
                   <MdPages className={bem.e('nav-item-icon')} />
@@ -312,8 +304,7 @@ class Sidebar extends React.Component {
         {/* The HIV Menu  */}  
           <NavItem
                 className={bem.e('nav-item')}
-                onClick={this.handleClick('PagesAnc')}
-              >
+                onClick={this.handleClick('PagesAnc')}>
                 <BSNavLink className={bem.e('nav-item-collapse')}>
                   <div className="d-flex">
                     <MdPages className={bem.e('nav-item-icon')} />
@@ -340,8 +331,7 @@ class Sidebar extends React.Component {
                       tag={NavLink}
                       to={to}
                       activeClassName="active"
-                      exact={exact}
-                    >
+                      exact={exact}>
                       <Icon className={bem.e('nav-item-icon')} />
                       <span className="">{name}</span>
                     </BSNavLink>

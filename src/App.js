@@ -4,18 +4,16 @@ import { EmptyLayout, LayoutRoute, MainLayout } from 'components/Layout';
 import PageSpinner from 'components/PageSpinner';
 // import AuthPage from 'pages/AuthPage';
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import componentQueries from 'react-component-queries';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import './styles/reduction.scss';
 import SignIn from 'pages/SignPage';
 
+
 const DashboardPage = React.lazy(() => import('pages/DashboardPage'));
 
 /* New Page loading using easy loading */
 const PateintRegistationPage = React.lazy(() => import('components/patient/PateintRegistationPage'));
-const EditPatient = React.lazy(() => import('components/patient/EditPatient'));
-
 const CheckInPage = React.lazy(() => import('components/CheckIn/CheckInPage'));
 const VitalSignsPage = React.lazy(() => import('components/Vitals/VitalSignsPage'));
 /* Consultation page loading */
@@ -45,10 +43,19 @@ const AddVitalsPage = React.lazy(() => import('components/Vitals/AddVitalsPage')
 
 /* HIV PAge Loading */
 const EnrollmentList = React.lazy(() => import('components/Hiv/EnrollmentList'));
+const HtsList = React.lazy(() => import('components/Hts/HtsList'));
+const RiskAssessment = React.lazy(() => import('components/Hts/RiskAssessment'));
+const HtsServices = React.lazy(() => import('components/Hts/HtsServices'));
 const EnrollPatient = React.lazy(() => import('components/Hiv/EnrollPatient'));
 const EnrolledPatients = React.lazy(() => import('components/Hiv/EnrolledPatients')); 
 const EnrolledPatientsDashboard = React.lazy(() => import('components/Hiv/EnrolledPatientsDashboard'));
-/* Sample Test table i design */
+const ClientStatusSearch = React.lazy(() => import('components/ClientStatusUpdate/ClientStatusSearch'));
+const NewClientStatus = React.lazy(() => import('components/ClientStatusUpdate/NewClientStatus'));
+const ViewClientStatusList = React.lazy(() => import('components/ClientStatusUpdate/ViewClientStatusList'));
+const ViewStatusSearch = React.lazy(() => import('components/ClientStatusUpdate/ViewStatusSearch'));
+const ArtClinic = React.lazy(() => import('components/Hiv/ArtClinic'));
+const IndexContactSearch = React.lazy(() => import('components/Hts/IndexContactSearch'));
+/* Sample table i design */
 const DataTable1 = React.lazy(() => import('pages/DataTable/DataTable1'));
 const DataTable2 = React.lazy(() => import('pages/DataTable/DataTable2'));
 const TestPage = React.lazy(() => import('pages/TestPage'));
@@ -89,10 +96,9 @@ class App extends React.Component {
                 <Route exact path="/collected-sample" component={CollectedSample} />
                 <Route exact path="/test-result" component={TestResult} />
                 <Route exact path="/collect-sample" component={CollectSample} />
-                {/* Patient Route */}
 
                 <Route exact path="/patients" component={PatientsPage} /> 
-                <Route exact path="/edit-patient/:id" component={EditPatient} /> 
+              
                 {/* Pharmacy Links */}
                 <Route exact path="/pharmacy" component={PharmacyPage} />
                 <Route exact path="/pending-prescription" component={PendingPrescription} />
@@ -107,8 +113,17 @@ class App extends React.Component {
                 
                 {/* The rout to Hiv Module */}
                 <Route exact path="/enrollment-list" component={EnrollmentList} />
+                <Route exact path="/hts-list" component={HtsList}/>
+                <Route exact path="/risk-assessment" component={RiskAssessment}/>
+                <Route exact path="/hts-services" component={HtsServices}/>
                 <Route exact path="/enroll-patient" component={EnrollPatient} />
                 <Route exact path="/enrolled-patients" component={EnrolledPatients} />
+                <Route exact path="/client-status" component={ClientStatusSearch} />
+                <Route exact path="/new-status" component={NewClientStatus} />
+                <Route exact path="/View-status" component={ViewClientStatusList} />
+                <Route exact path="/art-clinic" component={ArtClinic} />
+                <Route exact path="/index-Search" component={IndexContactSearch} />
+                <Route exact path="/View-client" component={ViewStatusSearch} />
                 <Route exact path="/enroll-patient-dashboard" component={EnrolledPatientsDashboard} />
                {/* The rout to that DataTabel */}
                <Route exact path="/data-table1" component={DataTable1} />
@@ -117,7 +132,6 @@ class App extends React.Component {
                <Route exact path="/testpage2" component={TestPage2} />
               </React.Suspense>
             </MainLayout>
-            
             <Redirect to="/" />
           </Switch>
         </GAListener>

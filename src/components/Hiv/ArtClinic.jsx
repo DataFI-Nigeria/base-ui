@@ -60,20 +60,13 @@ const PendingPrescription = (props) => {
                 <TiWarningOutline 
                     size="30"
                     className=" text-dark"/>  { '  '} 
-                    Note : Only  Patients can be search here
+                    Note :All Registered Patients can be search here
             </Alert>
           </Col>
         </Row>
-
               <Row>          
                 <Col sm="12">
-                
                   <Card body>
-                    <Link to="/enroll-patient">
-                        <Button color="primary" className=" float-right mr-1" >
-                                <FaUserPlus/> Enroll Patients
-                        </Button>
-                    </Link>
                     <Form>
                       <SearchTestOrder />
                     </Form>          
@@ -101,7 +94,6 @@ const PendingPrescription = (props) => {
                                 <TableCell align="center">{row.carbs}</TableCell>
                                 <TableCell align="center">{row.gender}</TableCell>
                                 <TableCell align="center">
-                                        
                                         <Typography variant="caption" className="text-primary"   display="block"  gutterBottom>
                                             <MdDashboard size="20"/>
                                             <Link to="/enroll-patient-dashboard"> View Dashboard</Link>

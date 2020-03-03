@@ -1,3 +1,3 @@
 
 
-export  const  url = ' http://172.16.2.47:8080/api/';
+export  const  url = ' http://10.167.4.248:8080/api/';

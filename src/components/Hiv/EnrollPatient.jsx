@@ -1,455 +1,339 @@
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
-import { 
-    Card,
-    CardContent,   
-}
-from '@material-ui/core';
-
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import Title from 'components/Title/CardTitle';
-import SaveIcon from '@material-ui/icons/Save';
-import CancelIcon from '@material-ui/icons/Cancel';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import DateFnsUtils from '@date-io/date-fns';
-
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Typography from '@material-ui/core/Typography';
 
 import Page from 'components/Page';
+import React, { useState } from 'react';
+import axios from 'axios';
+import 'react-widgets/dist/css/react-widgets.css';
+//Date Picker
+import { DateTimePicker } from 'react-widgets';
+import Moment from 'moment';
+import momentLocalizer from 'react-widgets-moment';
+// React Notification
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Title from 'components/Title/CardTitle';
+import {url} from 'axios/url';
+import {
+    Col,
+    Form,
+    FormGroup,
+    Input,
+    Label,
+    Row,
+    Alert,
+} from 'reactstrap';
+import { makeStyles } from '@material-ui/core/styles';
+import {  Card,CardContent, }
+    from '@material-ui/core';
+import Spinner from 'react-bootstrap/Spinner';
+import MatButton from '@material-ui/core/Button';
+import SaveIcon from '@material-ui/icons/Save';
+import CancelIcon from '@material-ui/icons/Cancel';
 
+
+
+// import CountryStates from './CountryStates';
+//Dtate Picker package
+Moment.locale('en');
+momentLocalizer();
 
 const useStyles = makeStyles(theme => ({
-  card: {
-    margin: theme.spacing(20),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center', 
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
-  }, 
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  cardBottom: {
-    marginBottom: 20
-  },
-  Select: {
-    height:45,
-    width: 300,
-  },
-  button: {
-    margin: theme.spacing(1),
-  },
-  
-  
+    card: {
+        margin: theme.spacing(20),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    form: {
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(3),
+    },
+    submit: {
+        margin: theme.spacing(3, 0, 2),
+    },
+    cardBottom: {
+        marginBottom: 20
+    },
+    Select: {
+        height:45,
+        width: 300,
+    },
+    button: {
+        margin: theme.spacing(1),
+    },
+
 }));
-const useStyles2 = makeStyles(theme => ({
-    inforoot: {
-      width: '100%',
-      marging: theme.spacing(5),
-    },
-    heading: {
-      fontSize: theme.typography.pxToRem(15),
-      fontWeight: 500,
-    },
-    secondaryHeading: {
-      fontSize: theme.typography.pxToRem(15),
-      color: theme.palette.text.secondary,
-      fontWeight: 500,
-    },
-    icon: {
-      verticalAlign: 'bottom',
-      height: 20,
-      width: 20,
-    },
-    details: {
-      alignItems: 'center',
-    },
-    column: {
-      flexBasis: '33.33%',
-    },
-    helper: {
-      borderLeft: `2px solid ${theme.palette.divider}`,
-      padding: theme.spacing(1, 2),
-    },
-    link: {
-      color: theme.palette.primary.main,
-      textDecoration: 'none',
-      '&:hover': {
-        textDecoration: 'underline',
-      },
-    },
-  }));
 
 
-export default function EnrollPatient() {
-  const classes = useStyles();
-  const classes2 = useStyles2();
-  const [state, setState] = React.useState({
-    age: '',
-    name: 'hai',
-  });
-    // The first commit of Material-UI
-    const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
+const PatientRegistration = (props) => {
+    const classes = useStyles();
+    const apiUrl = url+"patients";
+    const apicountries = url+"countries";
+    const apistate = url+"state/country/";
+    //Getting List of Countries and State
+    const [countries, setCountries] = React.useState([]);
+    const [states, setStates] = React.useState([]);
 
-    const handleDateChange = date => {
-        setSelectedDate(date);
-    };
-  const inputLabel = React.useRef(null);
-  const [labelWidth, setLabelWidth] = React.useState(0);
-  React.useEffect(() => {
-    setLabelWidth(inputLabel.current.offsetWidth);
-  }, []);
+    React.useEffect(() => {
+        async function getCharacters() {
+            const response = await fetch(apicountries);
 
-  const handleChange = name => event => {
-    setState({
-      ...state,
-      [name]: event.target.value,
+            const body = await response.json();
+            setCountries(body.map(({ name, id }) => ({ label: name, value: id })));
+        }
+        getCharacters();
+    }, []);
+    const [patient, setPatient] = useState({
+        hospitalNumber:'',
+        firstName: '',
+        lastName: '',
+        email:'',
+        dateRegistration: '',
+        facilityId: '1',
+        dob:'',
+        dobEstimated:'',
+        educationId:'',
+        genderId:'',
+        maritalStatusId:'',
+        occupationId:'',
+        alternatePhoneNumber:'',
+        address1:'',
+        city:'',
+        countryId:'',
+        landmark:'',
+        provinceId:'',
+        zipCode:'',
+        stateId:'',
+        street:'',
     });
-  };
 
-  return (
-    <Page title="Enroll Patient" >
-        
-    <div className={classes2.inforoot} >
-  
-            <ExpansionPanel defaultExpanded style={{ backgroundColor: '#F5F5F5'}}>
-                <ExpansionPanelSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1c-content"
-                id="panel1c-header"
-                >
-                   
-                <div className={classes2.column}>
-                    <Typography className={classes.heading}>
-                        Name: Alex Willaims Adeoye
-                        <br/>
-                        Gender: Female
-                    </Typography>
-                </div>
-                <div className={classes2.column}>
-                    <Typography className={classes2.heading}>
-                        DOB: June, 14 1990 (20 years)
-                        <br/>
-                        Phone Number : +234567890
-                    </Typography>
-                </div>
-                <div className={classes2.column}>
-                    <Typography className={classes2.heading}>
-                        Email: Alext@gmail.com
-                        
-                    </Typography>
-                </div>
-                </ExpansionPanelSummary>
-               
-            </ExpansionPanel>
-            </div>
-            <br/>
-           
-       <form className={classes.form} Validate>
+    const [showLoading, setShowLoading] = useState(false);
+    //Saving of Patient Registration
+    const savePatient = (e) => {
+        //toast.warn("Processing Registration");
+        setShowLoading(true);
+        e.preventDefault();
+        const data = {
+            hospitalNumber: patient.hospitalNumber,
+            dateRegistration: "01:11:2020",
+            facilityId: '1',
 
-       <Card className={classes.cardBottom}>  
-            <CardContent>
-                <Title >Enrollment Detail</Title>   
-               
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={4}>
-                        <TextField
-                            autoComplete="fnaidme"
-                            name="id"
-                            variant="outlined"
-                            required
-                            fullWidth
-                            id="firstName"
-                            label="Unique ID"
-                            autoFocus
-                            size="small"
-                            helperText="Unique ID"
-                        />
-                        </Grid>
-                        
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <Grid item xs={12} sm={4}>
-                            <KeyboardDatePicker
-                                margin="normal"
-                                id="date-picker-dialog"
-                                label="Date Of Registration/transfer In"
-                                format="MM/dd/yyyy"
-                                value={selectedDate}
-                                onChange={handleDateChange}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                                style={{marginTop: -10 }}
-                                />      
-                        </Grid>
-                        </MuiPickersUtilsProvider>
-                      
-                        <Grid item xs={12} sm={4}>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            "person": {
+                firstName: patient.firstName,
+                lastName:  patient.lastName,
+                email:patient.email,
+                dob:patient.dob,
+                maritalStatusId:patient.maritalStatusId,
+                occupationId:patient.occupationId,
+                genderId:patient.genderId,
+                educationId:patient.educationId,
+                "personContact": {
+                    address1:patient.address1,
+                    city:'1',
+                    countryId:'1',
+                    zipCode:patient.zipCode,
+                    stateId:'1',
+                    street:patient.street,
+                    provinceId: 1
+                },
+                "personRelatives": [
+                    {
+                        dobEstimated:patient.dobEstimated,
+                        alternatePhoneNumber:patient.alternatePhoneNumber,
+                        landmark:patient.landmark,
+                        provinceId:patient.provinceId,
 
-                            <KeyboardDatePicker
-                                margin="normal"
-                                id="date-picker-dialog"
-                                label="Date Confirm HIV Test"
-                                format="MM/dd/yyyy"
-                                value={selectedDate}
-                                onChange={handleDateChange}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                                style={{marginTop: -10}}
-                                />      
+                    }
+                ],
+                "titleId":1
+            }
+        };
 
-                        </MuiPickersUtilsProvider>
-                      
-                        </Grid>
+        axios.post(apiUrl, data)
+            .then((result) => {
+                setShowLoading(false);
+                props.history.push('/patient')
+                toast.success("Patient Registration Successful!");
+            }).catch((error) => {
+                setShowLoading(false)
+                // console.log("Error in CreateBook!");
+                //toast.error("Something went wrong!");
+            }
+        );
+    };
+    //End of the Saving the Patient Registration
+    const onChange = (e) => {
+        e.persist();
+        setPatient({...patient, [e.target.name]: e.target.value});
+    }
+    //Get States from selected country
+    const getStates = (event) => {
+        const getCountryId = event.target.value;
 
-                        <Grid item xs={12} sm={4}>
-                        <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel ref={inputLabel} htmlFor="outlined-age-native-simple">
-                                    Care Entry Point 
+        React.useEffect(() => {
+            async function getCharacters() {
+                const response = await fetch(apistate+getCountryId);
 
-                                </InputLabel>
-                                <Select
-                                native
-                                value={state.age}
-                                onChange={handleChange('age')}
-                                labelWidth={labelWidth}
-                                inputProps={{
-                                    name: 'careentry',
-                                }}
-                                className={classes.Select}
-                                >
-                                <option value="" />
-                                <option value={10}>UDUTH</option>
-                                <option value={20}>AUTH</option>
-                              
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                        <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel ref={inputLabel} htmlFor="outlined-age-native-simple">
-                                Source Of Referral
-                                </InputLabel>
-                                <Select
-                                native
-                                value={state.age}
-                                labelWidth={labelWidth}
-                                inputProps={{
-                                    name: 'referral',                                 
-                                }}
-                                className={classes.Select}
-                                >
-                                <option value="" />
-                                <option value={10}>Direct</option>
-                                <option value={20}>Google</option>
-                                
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                        <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel ref={inputLabel} htmlFor="outlined-age-native-simple">
-                                    Enrollment Setting
-                                </InputLabel>
-                                <Select
-                                native
-                                value={state.age}
-                                labelWidth={labelWidth}
-                                inputProps={{
-                                    name: 'hiv_status',
-                                  
-                                }}
-                                className={classes.Select}
-                                >
-                                <option value="" />
-                                <option value={10}>Positive</option>
-                                <option value={20}>Negative</option>
-                                
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        {/* For Date of Birth */}
-                        <Grid item xs={12} sm={4}>
-                        <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel ref={inputLabel} htmlFor="outlined-age-native-simple">
-                                   HIV Status at Registration
+                const stateList = await response.json();
+                setStates(stateList.map(({ name, id }) => ({ label: name, value: id })));
+            }
+            getCharacters();
+        }, []);
+        //setStates({})
+        //console.log(stateList);
+    }
 
-                                </InputLabel>
-                                <Select
-                                native
-                                value={state.age}
-                                onChange={handleChange('age')}
-                                labelWidth={labelWidth}
-                                inputProps={{
-                                    name: 'hiv_sttaus',
-                                }}
-                                className={classes.Select}
-                                >
-                                <option value="" />
-                                <option value={10}>Positive </option>
-                                <option value={20}>Negative</option>
-                              
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                        <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel ref={inputLabel} htmlFor="outlined-age-native-simple">
-                                Pregnancy
-                                </InputLabel>
-                                <Select
-                                native
-                                value={state.age}
-                                labelWidth={labelWidth}
-                                inputProps={{
-                                    name: 'pregnancy',                                 
-                                }}
-                                className={classes.Select}
-                                >
-                                <option value="" />
-                                <option value={10}>Postive</option>
-                                <option value={20}>Negative</option>
-                                
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                        <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel ref={inputLabel} htmlFor="outlined-age-native-simple">
-                                    Enrollment Setting
-                                </InputLabel>
-                                <Select
-                                native
-                                value={state.age}
-                                labelWidth={labelWidth}
-                                inputProps={{
-                                    name: 'hiv_status',
-                                  
-                                }}
-                                className={classes.Select}
-                                >
-                                <option value="" />
-                                <option value={10}>Positive</option>
-                                <option value={20}>Negative</option>
-                                
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        {/* For Date of Birth */}
-                       
-                        <Grid item xs={12} sm={8}>                       
-                            <FormControlLabel                            
-                                control={
-                                <Checkbox
-                                    icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-                                    checkedIcon={<CheckBoxIcon fontSize="small" />}
-                                    value="checkedI"                               
-                                />
-                                }
-                                label="Male"
-                            />
-                            <FormControlLabel                            
-                                control={
-                                <Checkbox
-                                    icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-                                    checkedIcon={<CheckBoxIcon fontSize="small" />}
-                                    value="checkedI"                               
-                                />
-                                }
-                                label="Female"
-                            />
-                            <FormControlLabel                            
-                                control={
-                                <Checkbox
-                                    icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-                                    checkedIcon={<CheckBoxIcon fontSize="small" />}
-                                    value="checkedI"                               
-                                />
-                                }
-                                label="Transgender(Female to Male)"
-                            />
-                            <FormControlLabel                            
-                                control={
-                                <Checkbox
-                                    icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-                                    checkedIcon={<CheckBoxIcon fontSize="small" />}
-                                    value="checkedI"                               
-                                />
-                                }
-                                label="Transgender(Female to Male)"
-                            />
-                        
-                        </Grid>
-                        {/* End of Date of Birth */}
-                        <Grid item xs={12} sm={4}>
-                        <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel ref={inputLabel} htmlFor="outlined-age-native-simple">
-                                    KP Target Group
-                                </InputLabel>
-                                <Select
-                                native
-                                value={state.age}
-                                labelWidth={labelWidth}
-                                inputProps={{
-                                    name: 'kp_target',
-                                  
-                                }}
-                                className={classes.Select}
-                                >
-                                <option value="" />
-                                <option value={10}>Positive</option>
-                                <option value={20}>Negative</option>
-                                
-                                </Select>
-                            </FormControl>
-                        </Grid>
+    return (
+        <Page title="Enroll Patient" >
+            <ToastContainer autoClose={2000} />
+            <Alert color="primary">
+                All Information with Asterisks(*) are compulsory
+            </Alert>
+            <Form onSubmit={savePatient}>
+                {/* First  row form entry  for Demographics*/}
+                <Row>
+                    <Col xl={12} lg={12} md={12}>
+                        <Card className={classes.cardBottom}>
+                            <CardContent>
+                                <Title >Enrollment Details <br/>
+                                </Title>
+                                <Row form>
+                                    <Col md={6}>
+                                        <FormGroup>
+                                            <Label for="hospitalNumber">Patient Id</Label>
+                                            <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="Patient ID " value={patient.hospitalNumber} />
+                                        </FormGroup>
+                                    </Col>
+                                    <Col md={6}>
+                                        <FormGroup>
+                                            <Label for="middleName">Date Of Reg/TransferIn</Label>
+                                            <DateTimePicker time={false} name="dateRegistration"  id="dateRegistration"   />
+                                        </FormGroup>
+                                    </Col>
+                                </Row>
+                                <Row form>
+                                    <Col md={6}>
+                                        <FormGroup>
+                                            <Label for="middleName">Date Of Confirmed HIV Test</Label>
+                                            <DateTimePicker time={false} name="dateRegistration"  id="dateRegistration"   />
+                                        </FormGroup>
+                                    </Col>
+                                    <Col md={6}>
+                                        <FormGroup>
+                                            <Label for="careentrypoint">Care Entry Point</Label>
+                                            <Input type="select" name="genderId" id="genderId" value={patient.genderId}  >
+                                                <option value="1">Female</option>
+                                                <option value="2">Male</option>
+                                            </Input>
+                                        </FormGroup>
+                                    </Col>
+                                </Row>
+                                <Row form>
+                                    <Col md={6}>
+                                        <FormGroup>
+                                            <Label for="careentrypoint">Source of Referal</Label>
+                                            <Input type="select" name="genderId" id="genderId" value={patient.genderId}  >
+                                                <option value="1">Female</option>
+                                                <option value="2">Male</option>
+                                            </Input>
+                                        </FormGroup>
+                                    </Col>
+                                    <Col md={6}>
+                                        <FormGroup>
+                                            <Label for="careentrypoint">Enrollment Setting</Label>
+                                            <Input type="select" name="genderId" id="genderId" value={patient.genderId}  >
+                                                <option value="1">Female</option>
+                                                <option value="2">Male</option>
+                                            </Input>
+                                        </FormGroup>
+                                    </Col>
+                                </Row>
+                                <Row form>
+                                    <Col md={6}>
+                                        <FormGroup>
+                                            <Label for="maritalStatus">HIV Status at Registration</Label>
+                                            <Input type="select" name="genderId" id="genderId" value={patient.genderId}  >
+                                                <option value="1">Female</option>
+                                                <option value="2">Male</option>
+                                            </Input>
+                                        </FormGroup>
+                                    </Col>
+                                    <Col md={6}>
+                                        <FormGroup>
+                                            <Label for="occupation">TB Satus</Label>
+                                            <Input type="select" name="occupationId" id="occupationId" value={patient.occupationId} >
+                                                <option value="1">Students</option>
+                                                <option value="2">Business</option>
+                                                <option value="3">Government</option>
+                                            </Input>
+                                        </FormGroup>
+                                    </Col>
+                                </Row>
+                                <Row form>
+                                    <Col md={6}>
+                                        <FormGroup>
+                                            <Label for="qualification">Pregnancy Satus</Label>
+                                            <Input type="select" name="educationId" onChange={onChange}>
+                                                <option value="1">PHD</option>
+                                                <option value="2">MSC</option>
+                                                <option value="3">BSC</option>
+                                                <option value="4">HND</option>
+                                                <option value="5">NCE</option>
+                                            </Input>
+                                        </FormGroup>
+                                    </Col>
+                                    <Col md={6}>
+                                        <FormGroup>
+                                            <Label for="maritalStatus">Gender</Label>
+                                            <Input type="select" name="maritalStatusId" id="maritalStatusId" value={patient.maritalStatusId} >
+                                                <option value="1">Male</option>
+                                                <option value="2">Female</option>
+                                                <option value="3">Transgender (Male to Female)</option>
+                                                <option value="3">Transgender (Female to Male)</option>
+                                            </Input>
+                                        </FormGroup>
+                                    </Col>
+                                </Row>
+                                <Row form>
+                                    <Col md={6}>
+                                        <FormGroup>
+                                            <Label for="maritalStatus">KP Target Group</Label>
+                                            <Input type="select" name="maritalStatusId" id="maritalStatusId" value={patient.maritalStatusId} >
+                                                <option value="1">Male</option>
+                                                <option value="2">Female</option>
+                                            </Input>
+                                        </FormGroup>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={12}>
+                                        {showLoading &&
+                                        <Spinner animation="border" role="status">
+                                            <span className="sr-only">Loading...</span>
+                                        </Spinner>
+                                        }
+                                    </Col>
+                                </Row>
+                                <MatButton
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.button}
+                                    startIcon={<SaveIcon />}>Save
+                                </MatButton>
+                                <MatButton
+                                    className={classes.button}
+                                    startIcon={<CancelIcon />}>
+                                    Cancel
+                                </MatButton>
+                            </CardContent>
+                        </Card>
+                    </Col>
+                </Row>
+                {/* Second row form entry  for contact details*/}
+            </Form>
+        </Page>
+    );
+};
 
-                        <br/>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        className={classes.button}
-                        startIcon={<SaveIcon />}
-                    >
-                        Save
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="default"
-                        className={classes.button}
-                        startIcon={<CancelIcon />}
-                    >
-                        Cancel
-                    </Button>
-                    
-                </Grid>
-                
-               
-            </CardContent>
-
-       </Card>
-       </form>
-    
-</Page>
-  );
-}
+export default PatientRegistration;
