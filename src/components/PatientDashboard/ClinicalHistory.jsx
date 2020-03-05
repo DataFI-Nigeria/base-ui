@@ -63,12 +63,12 @@ export default function ClinicalHistory() {
         <Tabs value={value} onChange={handleChange} aria-label="wrapped label tabs example">
           <Tab
             value="one"
-            label="Recent Visit"
+            label="Clinic"
             wrapped
             {...a11yProps('one')}
           />
-          <Tab value="two" label="Clinical Note" {...a11yProps('two')} />
-          
+          <Tab value="two" label="Pharmacy" {...a11yProps('two')} />
+          <Tab value="two" label="Laboratory" {...a11yProps('two')} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index="one">

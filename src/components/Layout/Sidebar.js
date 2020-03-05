@@ -56,34 +56,35 @@ const PageGeneralClinic = [
   { to: '/consultation', name: 'Consultation', exact: false, Icon: FaUserMd },
 ];
 const PagesAnc = [
-  { to: '/pmct', name: 'PMCT', exact: false, Icon: MdAirlineSeatFlat },
-  { to: '/anc-enrollment', name: 'Enrollment', exact: false, Icon: FaUserMd },
-  { to: '/anc-child', name: 'Child', exact: false, Icon: MdAirlineSeatFlat },
-  { to: '/anc-mother', name: 'Mother', exact: false, Icon: FaUserMd },
+  { to: '/index-Search', name: 'Index Contract Tracking', exact: false, Icon: GiTreeBeehive },
+  { to: '/hts-list', name: 'Risk Assesment', exact: false, Icon: GiTreeBeehive },
 ];
 const PagesHiv = [
   { to: '/enrollment-list', name: 'Enrollment', exact: false, Icon: GiTreeBeehive },
-  {
-    to: '/art-clinic',
-    name: 'Clinic',
-    exact: false,
-    Icon: FaUserPlus,
-  },
-  { to: '/hts-list', name: 'HTS', exact: false, Icon: GiTreeBeehive },
-  { to: '/case-management', name: 'Case Management', exact: false, Icon: GiTreeBeehive },
-  { to: '/pmtct', name: 'PMTCT', exact: false, Icon: GiTreeBeehive },
-  { to: '/index-Search', name: 'Index Contract Tracking', exact: false, Icon: GiTreeBeehive },
+  
+  
+  // { to: '/case-management', name: 'Case Management', exact: false, Icon: GiTreeBeehive },
+  // { to: '/pmtct', name: 'PMTCT', exact: false, Icon: GiTreeBeehive },
+
   { to: '/client-status', name: 'Client Status Update', exact: false, Icon: GiTreeBeehive },
+  { to: '/eac-search', name: 'EAC', exact: false, Icon: GiTreeBeehive },
+  { to: '/democ-Search', name: 'Differentiated Care', exact: false, Icon: GiTreeBeehive },
 ];
 
 const navItems = [
   { to: '/dashboard', name: 'Dashboard', exact: true, Icon: MdDashboard },
   { to: '/patients', name: 'Registration', exact: false, Icon: FaUsers },
-  { to: '/checkin', name: 'Check IN', exact: false, Icon: FaXRay },
+  { to: '/checkin', name: 'Check In', exact: false, Icon: FaXRay },
   // { to: '/testpage', name: 'Test Page', exact: false, Icon: FaXRay },
   // { to: '/testpage2', name: 'Test Page 2', exact: false, Icon: FaXRay },
 ];
+const PagesHts = [
+  { to: '/index-Search', name: 'Risk Assessment ', exact: false, Icon: GiTreeBeehive },
 
+  
+];
+//Make it a main menu { to: '/hts-list', name: 'HTS', exact: false, Icon: GiTreeBeehive },
+// { to: '/index-Search', name: 'Index Contract Tracking', exact: false, Icon: GiTreeBeehive },
 const bem = bn.create('sidebar');
 
 class Sidebar extends React.Component {
@@ -94,6 +95,7 @@ class Sidebar extends React.Component {
     isOpenPages: false,
     isOpenPagesHiv: false,
     isOpenPagesAnc:false,
+   
   };
 
   handleClick = name => () => {
@@ -303,7 +305,7 @@ class Sidebar extends React.Component {
                 <BSNavLink className={bem.e('nav-item-collapse')}>
                   <div className="d-flex">
                     <MdPages className={bem.e('nav-item-icon')} />
-                    <span className="">ANC</span>
+                    <span className="">HTS</span>
                   </div>
                   <MdKeyboardArrowDown
                     className={bem.e('nav-item-icon')}

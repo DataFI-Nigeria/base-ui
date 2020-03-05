@@ -77,7 +77,7 @@ export default function AddVitalsPage(props) {
                 formName: 'VITALS_SIGN_FORM', 
                 patientId: props.patient.patientId, 
                 serviceName:'CLINICAL_SERVICE', 
-                visitId:props.patient.checkInId, 
+                visitId:props.patient.id, 
                 dateEncounter:new Date() 
             }); 
         const [formDataForVitals, setformDataForVitals] = useState({pulse:"", respiratoryRate:"", temperature:"", diastolic:"", systolic:"", bodyWeight:"", height:""}) 
@@ -89,21 +89,22 @@ export default function AddVitalsPage(props) {
         e.preventDefault();  
         const newDatenow = moment(vitals.dateEncounter).format('DD-MM-YYYY');
         const data = { 
-                formName: 'VITALS_SIGN_FORM', 
+                formName: 'VITAL_SIGNS_FORM', 
                 patientId:vitals.patientId, 
-                serviceName:'CLINICAL_SERVICE' ,
+                serviceName:'GENERAL_SERVICE' ,
                 visitId:vitals.visitId,
                 formData:formDataForVitals,
                 dateEncounter:newDatenow
         };  
         console.log(data);
         axios.post(apiUrl, data)
-            .then((result) => {          
+            .then((result) => {  
+                toast.success("Patient Checked In was Successful!");        
                 setShowLoading(false);
-                props.history.push('/checkedin-patients')
-                toast.success("Patient Checked In was Successful!");
+                props.history.push('/checkedin-patients') 
                 console.log(result);
             }).catch((error) => {
+                //toast.danger("Processing Please wait "); 
                 console.log(error);
             setShowLoading(false)
             setVitals(false);
@@ -122,7 +123,7 @@ export default function AddVitalsPage(props) {
     return (
         
             <form className={classes.form} onSubmit={SaveVitals}>
-                <ToastContainer autoClose={2000} />
+               
                 <Card className={classes.cardBottom}>
                     <CardContent>
                         <Title >New Vitals Signs --- {props.patient.hospitalNumber}
@@ -143,7 +144,7 @@ export default function AddVitalsPage(props) {
                             <FormGroup>
                                 <Label for="middleName">Pulse(bpm)</Label>
                                 
-                                <Input type="text" name="pulse" id="pulse" placeholder="Pulse(bpm) " value={formDataForVitals.pulse}
+                                <Input type="text" name="pulse" id="pulse" placeholder=" " value={formDataForVitals.pulse}
                                     onChange={onChangeFormdata}/>
                             </FormGroup>
                             </Col>
@@ -152,37 +153,39 @@ export default function AddVitalsPage(props) {
                         <Row form>
                             <Col md={6}>
                             <FormGroup>
-                                <Label for="middleName">Pulse(bpm)</Label>
+                                <Label for="middleName">Respiratory Rate(bpm)</Label>
                                 
-                                <Input type="text" name="respiratoryRate" id="respiratoryRate" placeholder="respiration(bpm)" value={formDataForVitals.respiratoryRate}
+                                <Input type="text" name="respiratoryRate" id="respiratoryRate" placeholder="" value={formDataForVitals.respiratoryRate}
                                     onChange={onChangeFormdata}/>
                             </FormGroup>
                             </Col>
+                            
                             <Col md={6}>
                             <FormGroup>
-                                <Label for="hospitalNumber">Blood Pressure(mmHg)</Label>
-                                <Input type="text" name="diastolic" id="diastolic" placeholder="Blood Pressure(mmHg)"  value={formDataForVitals.diastolic}
+                                <Label for="middleName">Temparature (C)</Label>
+                                
+                                <Input type="text" name="temperature" id="temperature" placeholder="" value={formDataForVitals.temperature}
                                     onChange={onChangeFormdata}/>
                             </FormGroup>
                             </Col>
                         </Row>
-                        <Row form>                           
+                        <Row form> 
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="hospitalNumber">Diastolic(mmHg)</Label>
+                                <Input type="text" name="diastolic" id="diastolic" placeholder=""  value={formDataForVitals.diastolic}
+                                    onChange={onChangeFormdata}/>
+                            </FormGroup>
+                            </Col>                          
                             <Col md={6}>
                             <FormGroup>
-                                <Label for="middleName">Pulse(bpm)</Label>
+                                <Label for="middleName">Systolic(mmhg)</Label>
                                 
-                                <Input type="text" name="systolic" id="systolic" placeholder="Blood Pressure(mmHg)"  value={formDataForVitals.systolic}
+                                <Input type="text" name="systolic" id="systolic" placeholder=""  value={formDataForVitals.systolic}
                                     onChange={onChangeFormdata}/>
                             </FormGroup>
                             </Col>
-                            <Col md={6}>
-                            <FormGroup>
-                                <Label for="middleName">Temparature</Label>
-                                
-                                <Input type="text" name="temperature" id="temperature" placeholder="Temperature(c)" value={formDataForVitals.temperature}
-                                    onChange={onChangeFormdata}/>
-                            </FormGroup>
-                            </Col>
+                            
                            
                         </Row>
                         <Row form>
@@ -190,7 +193,7 @@ export default function AddVitalsPage(props) {
                             <FormGroup>
                                 <Label for="middleName">Weight Kg</Label>
                                 
-                                <Input type="text" name="bodyWeight" id="bodyWeight" placeholder="Wight(kg)" value={formDataForVitals.bodyWeight}
+                                <Input type="text" name="bodyWeight" id="bodyWeight" placeholder="" value={formDataForVitals.bodyWeight}
                                     onChange={onChangeFormdata}/>
                             </FormGroup>
                             </Col>
@@ -198,7 +201,7 @@ export default function AddVitalsPage(props) {
                             <FormGroup>
                                 <Label for="middleName">Height</Label>
                                 
-                                <Input type="text" name="height" id="height" placeholder="Height(cm)" value={formDataForVitals.height}
+                                <Input type="text" name="height" id="height" placeholder="" value={formDataForVitals.height}
                                     onChange={onChangeFormdata}/>
                             </FormGroup>
                             </Col>

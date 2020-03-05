@@ -7,7 +7,7 @@ import {
   Form,
   Row,
   FormGroup,
-  Button,Modal, ModalHeader, ModalBody, ModalFooter,
+  Button,Modal, ModalHeader, ModalBody, ModalFooter,Label,Input
 } from 'reactstrap';
 import { MdSave, MdViewList} from 'react-icons/md';
 import {TiArrowBack} from 'react-icons/ti';
@@ -26,7 +26,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
+import MatButton from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
+import { Badge } from 'reactstrap';
 import Page from 'components/Page';
 
 
@@ -85,7 +87,10 @@ function createData(name, calories, fat, ) {
     createData('2', 'Vitamin B', 'Should Take Monthly'),
     createData('3', 'Vitamin B','Need Hot water ' ),
   ];
-
+  const textstyle = {
+    fontSize: '14px',
+    fontWeight: 'bolder'
+  }; 
   
 
 export default function ViewPrescription(props){
@@ -162,8 +167,12 @@ export default function ViewPrescription(props){
                                         {rows.map(row => (
                                             <TableRow key={row.name}>
                                             <TableCell component="th" scope="row"> {row.name} </TableCell>
-                                            <TableCell align="center">{row.calories}</TableCell>
-                                            <TableCell align="center">{row.fat}</TableCell>                                                                                    
+                                            <TableCell align="left">
+                                              Paracetamol 500mg(tablet)
+                                              <br/>
+                                            2(3 times daily) 13tablet Start <span className="text-info">on 12/21/20202</span> 
+                                            </TableCell>
+                                            <TableCell align="center"> <Badge href="#" color="light">13 Tablet Dispensed</Badge></TableCell>                                                                                    
                                             <TableCell align="center">
                                               
                                               <Tooltip title="View Detail">
@@ -171,6 +180,8 @@ export default function ViewPrescription(props){
                                                     <MdViewList size="25" onClick={toggle2}/>
                                                   </IconButton>
                                               </Tooltip>
+                                              
+                                            
                                             </TableCell>
                                             
                                             </TableRow>
@@ -186,11 +197,18 @@ export default function ViewPrescription(props){
                                 <Col md={4} style={{ marginTop: '33px'}}></Col>
                                 <Col md={4}></Col>                                
                                 <Col md={2} style={{ marginTop: '33px'}}>
-                                <FormGroup>
-                                    <Button color="primary" className=" float-right mr-1" >
-                                            <MdSave/>  Save
-                                    </Button>
-                                </FormGroup>
+                               
+                                    
+                                    <MatButton  
+                                        type="submit" 
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.button}
+                                        startIcon={<MdSave />}
+                                    >
+                                        Save
+                                    </MatButton>
+                                
                                 </Col>
                             </Row>
                         </Form>
@@ -203,13 +221,56 @@ export default function ViewPrescription(props){
               <Modal isOpen={modal2} toggle={toggle2} className={className} size='lg'>
               <ModalHeader toggle={toggle2}>Precription Detail</ModalHeader>
               <ModalBody>
-                  <Row >
-                      <Col xs="12">
-                        <br/>
-                          <p>Precription Details</p>
-                      </Col>                    
-                  </Row>
-              </ModalBody>
+                    <Row style={{ marginTop: '20px'}}>
+                        <Col xs="12">
+                          Drug Name 
+                          <br/>
+                          <p style={textstyle}>Paracetamol 55mg </p>
+
+                        
+                        </Col>
+                        <Col xs="4">
+                          Dosa
+                          <br/>
+                          <p style={textstyle}>3</p>
+                          
+                          </Col>
+                        <Col xs="4">
+                         Unit 
+                          <br/>
+                          <p style={textstyle}>Tablet</p>
+                          </Col>
+                          <Col xs="4">
+                         Frequency 
+                          <br/>
+                          <p style={textstyle}>Three times daily</p>
+                          </Col>
+                    </Row >
+                    <Row style={{ marginTop: '20px'}}>
+                        <Col xs="4">
+                          Start Date 
+                          <br/>
+                          <p style={textstyle}>2020/03/12</p>
+
+                        
+                        </Col>
+                        <Col xs="12">
+                          Additional Information
+                          
+                          </Col>
+                        <Col xs="4">
+                          Instruction
+                          <br/>
+                          <p style={textstyle}>020/03/03</p>
+                          </Col>
+                          <Col xs="4">
+                          Additional Instruction
+                          <br/>
+                          <p style={textstyle}>Nile</p>
+                          </Col>
+                    </Row>
+                    
+                </ModalBody>
               <ModalFooter>
             <Button color="secondary" onClick={toggle2}>Close</Button>
           </ModalFooter>

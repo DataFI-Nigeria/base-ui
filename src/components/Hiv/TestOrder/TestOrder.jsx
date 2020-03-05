@@ -217,11 +217,7 @@ const saveTestOrder = (e) => {
 return (
 <form className={classes.form} onSubmit={saveTestOrder} >
     {/* The input search field  */}
-    
 <Grid container spacing={2}>
-       
-       
-    
         <Grid item xs='12'>
             <Card className={classes.cardroot} >
                     <CardContent>
@@ -231,7 +227,7 @@ return (
                         {successMessage ? 
                         <Alert color="primary">
                 <TiWarningOutline 
-                    size="30"
+                    size="25"
                     className=" text-dark"/>  
                     {successMessage}
             </Alert> : ""
@@ -249,7 +245,6 @@ return (
                                                 ))}
                                     </Input>
                                 </FormGroup> 
-
                         </Grid>
                         <br/>
                         <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>

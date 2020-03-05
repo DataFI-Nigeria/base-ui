@@ -153,7 +153,7 @@ const PatientRegistration = (props) => {
             .then((result) => {
                 setShowLoading(false);
                 props.history.push('/patient')
-                toast.success("Patient Registration Successful!");
+                // toast.success("Patient Registration Successful!");
             }).catch((error) => {
                 setShowLoading(false)
                 // console.log("Error in CreateBook!");
@@ -222,8 +222,8 @@ const PatientRegistration = (props) => {
                                         <FormGroup>
                                             <Label for="careentrypoint">Care Entry Point</Label>
                                             <Input type="select" name="genderId" id="genderId" value={patient.genderId}  >
-                                                <option value="1">Female</option>
-                                                <option value="2">Male</option>
+                                                <option value="1">Facility </option>
+                                                <option value="2">Community</option>
                                             </Input>
                                         </FormGroup>
                                     </Col>
@@ -233,8 +233,8 @@ const PatientRegistration = (props) => {
                                         <FormGroup>
                                             <Label for="careentrypoint">Source of Referal</Label>
                                             <Input type="select" name="genderId" id="genderId" value={patient.genderId}  >
-                                                <option value="1">Female</option>
-                                                <option value="2">Male</option>
+                                                <option value="1">ANC</option>
+                                                <option value="2">DOTS</option>
                                             </Input>
                                         </FormGroup>
                                     </Col>
@@ -242,8 +242,8 @@ const PatientRegistration = (props) => {
                                         <FormGroup>
                                             <Label for="careentrypoint">Enrollment Setting</Label>
                                             <Input type="select" name="genderId" id="genderId" value={patient.genderId}  >
-                                                <option value="1">Female</option>
-                                                <option value="2">Male</option>
+                                                <option value="1"></option>
+                                                <option value="2"></option>
                                             </Input>
                                         </FormGroup>
                                     </Col>
@@ -253,8 +253,7 @@ const PatientRegistration = (props) => {
                                         <FormGroup>
                                             <Label for="maritalStatus">HIV Status at Registration</Label>
                                             <Input type="select" name="genderId" id="genderId" value={patient.genderId}  >
-                                                <option value="1">Female</option>
-                                                <option value="2">Male</option>
+                                                
                                             </Input>
                                         </FormGroup>
                                     </Col>
@@ -262,9 +261,7 @@ const PatientRegistration = (props) => {
                                         <FormGroup>
                                             <Label for="occupation">TB Satus</Label>
                                             <Input type="select" name="occupationId" id="occupationId" value={patient.occupationId} >
-                                                <option value="1">Students</option>
-                                                <option value="2">Business</option>
-                                                <option value="3">Government</option>
+                                               
                                             </Input>
                                         </FormGroup>
                                     </Col>
@@ -274,11 +271,7 @@ const PatientRegistration = (props) => {
                                         <FormGroup>
                                             <Label for="qualification">Pregnancy Satus</Label>
                                             <Input type="select" name="educationId" onChange={onChange}>
-                                                <option value="1">PHD</option>
-                                                <option value="2">MSC</option>
-                                                <option value="3">BSC</option>
-                                                <option value="4">HND</option>
-                                                <option value="5">NCE</option>
+                                               
                                             </Input>
                                         </FormGroup>
                                     </Col>
@@ -286,10 +279,7 @@ const PatientRegistration = (props) => {
                                         <FormGroup>
                                             <Label for="maritalStatus">Gender</Label>
                                             <Input type="select" name="maritalStatusId" id="maritalStatusId" value={patient.maritalStatusId} >
-                                                <option value="1">Male</option>
-                                                <option value="2">Female</option>
-                                                <option value="3">Transgender (Male to Female)</option>
-                                                <option value="3">Transgender (Female to Male)</option>
+                                                
                                             </Input>
                                         </FormGroup>
                                     </Col>
@@ -299,8 +289,7 @@ const PatientRegistration = (props) => {
                                         <FormGroup>
                                             <Label for="maritalStatus">KP Target Group</Label>
                                             <Input type="select" name="maritalStatusId" id="maritalStatusId" value={patient.maritalStatusId} >
-                                                <option value="1">Male</option>
-                                                <option value="2">Female</option>
+                                                
                                             </Input>
                                         </FormGroup>
                                     </Col>

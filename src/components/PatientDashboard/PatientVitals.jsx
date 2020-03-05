@@ -35,13 +35,13 @@ export default function PatientVitals(props) {
     const [data, setData] = useState({pulse:'', height: '', systolic: '', diastolic: '', bodyWeight: ''}); 
     // const newid = data;
     
-    //console.log(data..patientId);
-    const apistate = url+"encounters/CLINICAL_SERVICE/VITAL_SIGNS_FORM/"+getpatientID+"/latest";
+    console.log(data.patientId);
+    const apistate = url+"encounters/GENERAL_SERVICE/VITAL_SIGNS_FORM/"+getpatientID+"/last";
     useEffect(() => {    
     const GetData = async () => {    
         const result = await axios(apistate);    
         setData(result.data.formData);  
-        //console.log(result.data.formData);   
+        console.log(result.data.formData);   
     }  
     GetData();     
 
@@ -65,22 +65,22 @@ export default function PatientVitals(props) {
                           
                                 <Grid item xs='6'>
                                     <Typography  color="textPrimary" gutterBottom> 
-                                            Weight: <Chip variant="outlined" size="small" style={chips} label={data.pulse} />
+                                            Weight: <Chip variant="outlined" size="small" style={chips} label={data.bodyWeight} />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs='6'>
                                     <Typography color="textPrimary" gutterBottom>
-                                            RR : <Chip variant="outlined" size="small" style={chips} label={data.pulse} />
+                                            RR : <Chip variant="outlined" size="small" style={chips} label={data.respiratoryRate} />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs='6'>
                                     <Typography color="textPrimary" gutterBottom>
-                                            Height: <Chip variant="outlined" size="small" style={chips} label={data.pulse} />
+                                            Height: <Chip variant="outlined" size="small" style={chips} label={data.height} />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs='6'>
                                     <Typography  color="textPrimary" gutterBottom>
-                                            Tempreature: <Chip variant="outlined" size="small" style={chips}  label={data.pulse} />
+                                            Temperature: <Chip variant="outlined" size="small" style={chips}  label={data.temperature} />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs='6'>
@@ -90,7 +90,7 @@ export default function PatientVitals(props) {
                                 </Grid>
                                 <Grid item xs='6'>
                                     <Typography  color="textPrimary" gutterBottom>
-                                            Blood Presure : <Chip variant="outlined" size="small" style={chips}  label={data.pulse} />
+                                            Blood Presure : <Chip variant="outlined" size="small" style={chips}  label={data.diastolic} /> 
                                     </Typography>
                                 </Grid>
                                 <Grid item xs='6'>
@@ -98,12 +98,7 @@ export default function PatientVitals(props) {
                                             BMI Sstatus: <Chip variant="outlined" size="small" style={chips}  label={data.pulse} />
                                     </Typography>
                                 </Grid>
-                                <Grid item xs='23'>
-                                    <Typography className={classes.chips} color="textPrimary" gutterBottom>
-                                            Paulse : <Chip variant="outlined" size="small"   style={chips} label={data.pulse} />
-                                    </Typography>
-                                </Grid>
-                                
+                               
                             </Grid>                               
                     </CardContent>                      
             </Card>                     

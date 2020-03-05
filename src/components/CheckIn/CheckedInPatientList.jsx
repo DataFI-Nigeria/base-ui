@@ -131,13 +131,15 @@ export default function MatPaginationTable(props) {
                 <TableCell align="center">{row.dateVisitEnd} {' '} {row.timeVisitEnd} </TableCell>  
 
                 <TableCell align="center">
-                <Tooltip title="Patient Dashboard">
-                    <Link to="/data-table1">
-                        <IconButton aria-label="Collect Sample">
-                            <MdDashboard size={20}/>
+               
+                <Link to={{ pathname: '/enroll-patient-dashboard', state: { getpatient: {row}} }}>
+                    <Tooltip title="View Dashboard">
+                        <IconButton aria-label="View Dashboard">
+                        <MdDashboard />
                         </IconButton>
+                    </Tooltip>
                     </Link>
-                </Tooltip>
+               
                 </TableCell>  
  
 

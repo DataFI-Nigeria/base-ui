@@ -94,10 +94,7 @@ const PendingPrescription = (props) => {
                                 <TableCell align="center">{row.carbs}</TableCell>
                                 <TableCell align="center">{row.gender}</TableCell>
                                 <TableCell align="center">
-                                        <Typography variant="caption" className="text-primary"   display="block"  gutterBottom>
-                                            <MdDashboard size="20"/>
-                                            <Link to="/enroll-patient-dashboard"> View Dashboard</Link>
-                                        </Typography>                                    
+                                                                            
                                 </TableCell>
                                 </TableRow>
                             ))}

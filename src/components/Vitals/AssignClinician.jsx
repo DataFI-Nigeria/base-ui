@@ -85,14 +85,16 @@ export default function AssignClinician(props) {
         
         console.log(data);
         axios.post(apiUrl, data)
-            .then((result) => {          
+            .then((result) => { 
+                toast.success(" Successful!");         
                 setShowLoading(false);
                 props.history.push('/checkedin-patients')
-                toast.success(" Successful!");
+               
             }).catch((error) => {
+                toast.info(" Processing Please wait!"); 
                 console.log(error);
-            setShowLoading(false)
-            setclinician(false);
+                setShowLoading(false);
+                setclinician(false);
 
             }
             ); 

@@ -39,12 +39,7 @@ const PatientPage = () => {
     const classes = useStyles();
     const classes2 = useStyles();
     return (
-        <Page title="Client Status Update" >
-            <Link to="/vital-signs">
-                <Button color="primary" className=" float-right mr-1" >
-                    <MdKeyboardBackspace/>Go Back
-                </Button>
-            </Link>
+        <Page title="New Index Contact" >
             <div className={classes2.inforoot} >
                 <ExpansionPanel defaultExpanded style={{ backgroundColor: '#F5F5F5'}}>
                     <ExpansionPanelSummary
@@ -82,18 +77,18 @@ const PatientPage = () => {
                             <Col xl={12} lg={12} md={12}>
                                 <Card className={classes.cardBottom}>
                                     <CardContent>
-                                        <Title >New Client Status<br/>
+                                        <Title >New Index Contact<br/>
                                         </Title>
                                         <Row form>
                                             <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for="hospitalNumber">New Status</Label>
+                                                    <Label for="hospitalNumber">First Name</Label>
                                                     <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="New Status"  />
                                                 </FormGroup>
                                             </Col>
                                             <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for="middleName">Date Of New Status</Label>
+                                                    <Label for="middleName">Other Names</Label>
                                                     <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="Date of New Status"  />
                                                 </FormGroup>
                                             </Col>
@@ -101,8 +96,11 @@ const PatientPage = () => {
                                         <Row form>
                                             <Col md={6}>
                                                 <FormGroup>
-                                                    <Label for="middleName">Date Of Tracked</Label>
-                                                    <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="Date of Tracked"  />
+                                                    <Label for="middleName">Gender</Label>
+                                                    <Input type="select" name="genderId" id="genderId"  >
+                                                        <option value="1">Male</option>
+                                                        <option value="2">Female</option>
+                                                    </Input>
                                                 </FormGroup>
                                             </Col>
                                             <Col md={6}>

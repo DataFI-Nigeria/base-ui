@@ -14,7 +14,6 @@ import {
     FaPencilAlt
 } from 'react-icons/fa';
 import {Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, Row} from 'reactstrap';
-import AddVitalsPage from 'components/Vitals/AddVitalsPage';
 import {Card, CardContent} from '@material-ui/core';
 import MatButton from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
@@ -31,9 +30,9 @@ function createData(name, calories, fat, carbs, protein) {
 }
 
 const rows = [
-    createData('1598', 159, 6.0, 24, 4.0),
-    createData('1234', 237, 9.0, 37, 4.3),
-    createData('5555', 262, 16.0, 24, 6.0),
+    createData('111', 159, 6.0, 24, 4.0),
+    createData('111', 237, 9.0, 37, 4.3),
+    createData('111', 262, 16.0, 24, 6.0),
 ];
 
 export default function DataTableList(props) {
@@ -46,10 +45,13 @@ export default function DataTableList(props) {
             <Table className={classes.table} aria-label="caption table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>ART Status</TableCell>
-                        <TableCell align="center">Date of Status</TableCell>
-                        <TableCell align="center">Tracking Outcome</TableCell>
-                        <TableCell align="center">Date Tracked</TableCell>
+                        <TableCell>Patient ID</TableCell>
+                        <TableCell align="center">Patient Name</TableCell>
+                        <TableCell align="center">Gender</TableCell>
+                        <TableCell align="center">Date of 1st EAC</TableCell>
+                        <TableCell align="center">Date of 2nd EAC</TableCell>
+                        <TableCell align="center">Date of 3rd EAC</TableCell>
+                        <TableCell align="center">Date of Repeact VL</TableCell>
                         <TableCell align="center">Action</TableCell>
                     </TableRow>
                 </TableHead>
@@ -59,6 +61,9 @@ export default function DataTableList(props) {
                             <TableCell component="th" scope="row">
                                 {row.name}
                             </TableCell>
+                            <TableCell align="center">{row.calories}</TableCell>
+                            <TableCell align="center">{row.fat}</TableCell>
+                            <TableCell align="center">{row.carbs}</TableCell>
                             <TableCell align="center">{row.calories}</TableCell>
                             <TableCell align="center">{row.fat}</TableCell>
                             <TableCell align="center">{row.carbs}</TableCell>
@@ -72,7 +77,7 @@ export default function DataTableList(props) {
                         </TableRow>
                     ))}
                     <Modal isOpen={modal} toggle={toggle}  size='lg'>
-                        <ModalHeader toggle={toggle}>Edit Patient Client Status</ModalHeader>
+                        <ModalHeader toggle={toggle}>Patient EAC</ModalHeader>
                         <ModalBody>
                             <Form >
                                 {/* First  row form entry  for Demographics*/}
@@ -80,53 +85,33 @@ export default function DataTableList(props) {
                                     <Col xl={12} lg={12} md={12}>
                                         <Card className={classes.cardBottom}>
                                             <CardContent>
-                                                <Title >Client Status<br/>
+                                                <Title >Patient EAC<br/>
                                                 </Title>
-                                                <Row form>
+                                                <Row>
                                                     <Col md={6}>
                                                         <FormGroup>
-                                                            <Label for="hospitalNumber">New Status</Label>
-                                                            <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="New Status"  />
+                                                            <Label for="hospitalNumber">Date Of 1st EAC</Label>
+                                                            <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="First EAC" />
                                                         </FormGroup>
                                                     </Col>
                                                     <Col md={6}>
                                                         <FormGroup>
-                                                            <Label for="middleName">Date Of New Status</Label>
-                                                            <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="Date of New Status"  />
-                                                        </FormGroup>
-                                                    </Col>
-                                                </Row>
-                                                <Row form>
-                                                    <Col md={6}>
-                                                        <FormGroup>
-                                                            <Label for="middleName">Date Of Tracked</Label>
-                                                            <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="Date of Tracked"  />
-                                                        </FormGroup>
-                                                    </Col>
-                                                    <Col md={6}>
-                                                        <FormGroup>
-                                                            <Label for="middleName">Date Agreed To Return</Label>
-                                                            <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="Date Agreed To Return"  />
+                                                            <Label for="hospitalNumber">Date Of 2nd EAC</Label>
+                                                            <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="Second EAC" />
                                                         </FormGroup>
                                                     </Col>
                                                 </Row>
-                                                <Row form>
+                                                <Row>
                                                     <Col md={6}>
                                                         <FormGroup>
-                                                            <Label for="causeofdeath">Cause of Death</Label>
-                                                            <Input type="select" name="genderId" id="genderId"  >
-                                                                <option value="1">acident</option>
-                                                                <option value="2">aids</option>
-                                                            </Input>
+                                                            <Label for="hospitalNumber">Date Of 3rd EAC</Label>
+                                                            <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="Third EAC" />
                                                         </FormGroup>
                                                     </Col>
                                                     <Col md={6}>
                                                         <FormGroup>
-                                                            <Label for="reasonforinterruption">Reason for Interruption</Label>
-                                                            <Input type="select" name="genderId" id="genderId"  >
-                                                                <option value="1">sick</option>
-                                                                <option value="2">not inetrested</option>
-                                                            </Input>
+                                                            <Label for="hospitalNumber">Date Of Repeact VL</Label>
+                                                            <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="Repeat VL" />
                                                         </FormGroup>
                                                     </Col>
                                                 </Row>

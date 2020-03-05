@@ -108,7 +108,8 @@ export default function ConsultationPage(props) {
     const {getpatient} =props.getpatientdetails ;
     const PatientID = getpatient.row.patientId;
     const visitId = getpatient.row.id;
-   //console.log(getpatient);
+//    console.log(getpatient);
+//    alert(getpatient);
     //Save Assign Clinician 
     const [consult, setconsult] = useState({ 
             present_consultation: '', 
@@ -184,7 +185,8 @@ return (
                                     </Typography>
                                 </Grid>
                                 
-                            </Grid>                               
+                            </Grid>   
+                                         
                     </CardContent>                      
                 </Card>
         </Grid>
@@ -201,9 +203,11 @@ return (
                                     
                                     <Input type="textarea" name="present_consultation"  id="present_consultation" style={{height: '150px' }} value={consult.present_consultation}
                                     onChange={onChange}/>
+                                    <br></br>
                                     </FormGroup>
                                         
                                     </Typography>
+                                    
                                 </Grid>
                                 
                             </Grid>                               

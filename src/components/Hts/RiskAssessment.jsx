@@ -20,7 +20,7 @@ import {
     Input,
     Label,
     Row,
-     ModalHeader, ModalBody, Modal, ModalFooter, Button,
+    Alert, ModalHeader, ModalBody, Modal, ModalFooter, Button,
 } from 'reactstrap';
 import { makeStyles } from '@material-ui/core/styles';
 import {  Card,CardContent, }
@@ -29,7 +29,7 @@ import Typography from '@material-ui/core/Typography';
 import MatButton from '@material-ui/core/Button';
 import CancelIcon from '@material-ui/icons/Cancel';
 import {Link} from 'react-router-dom';
-
+import Tooltip from '@material-ui/core/Tooltip';
 
 Moment.locale('en');
 momentLocalizer();
@@ -72,7 +72,8 @@ const PatientRegistration = (props) => {
     const [countries, setCountries] = React.useState([]);
     const [states, setStates] = React.useState([]);
     const [show, setShow] = useState(false);
-
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     const [modal, setModal] = useState(false);
     const [modal2, setModal2] = useState(false);
 
@@ -171,7 +172,21 @@ const PatientRegistration = (props) => {
         setPatient({...patient, [e.target.name]: e.target.value});
     }
     //Get States from selected country
+    const getStates = (event) => {
+        const getCountryId = event.target.value;
 
+        React.useEffect(() => {
+            async function getCharacters() {
+                const response = await fetch(apistate+getCountryId);
+
+                const stateList = await response.json();
+                setStates(stateList.map(({ name, id }) => ({ label: name, value: id })));
+            }
+            getCharacters();
+        }, []);
+        //setStates({})
+        //console.log(stateList);
+    }
 
     return (
         <Page title="HIV Risk Assessment Stratification" >

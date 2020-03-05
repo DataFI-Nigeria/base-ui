@@ -57,7 +57,7 @@ const PendingPrescription = (props) => {
   const [page, setPage] = React.useState(0);  
   const [data, setData] = useState([]);   
   const [rowsPerPage, setRowsPerPage] = React.useState(5);  
-  const apistate = url+"patients";
+  const apistate = "https://jsonplaceholder.typicode.com/users";
       useEffect(() => {    
         const GetData = async () => {    
           const result = await axios(apistate);    
@@ -118,9 +118,9 @@ const PendingPrescription = (props) => {
                                 <TableCell component="th" scope="row">
                                     {row.name}
                                 </TableCell>
-                                <TableCell align="center">{row.calories}</TableCell>
-                                <TableCell align="center">{row.fat}</TableCell>
-                                <TableCell align="center">{row.carbs}</TableCell>
+                                <TableCell align="center">{row.usernme}</TableCell>
+                                <TableCell align="center">{row.username}</TableCell>
+                                <TableCell align="center">{row.username}</TableCell>
                                 <TableCell align="center">
                                         
                                         <Typography variant="caption" className="text-primary"   display="block"  gutterBottom>

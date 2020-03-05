@@ -66,7 +66,7 @@ export default function TestOrderMain (props){
   const [page, setPage] = React.useState(0);  
   const [data, setData] = useState([]);   
   const [rowsPerPage, setRowsPerPage] = React.useState(5);  
-  const apistate = "https://jsonplaceholder.typicode.com/users";
+  const apistate = url+"encounters/GENERAL_SERVICE/LABTEST_ORDER_FORM/";
       useEffect(() => {    
         const GetData = async () => {    
           const result = await axios(apistate);    
@@ -123,13 +123,13 @@ export default function TestOrderMain (props){
                         <TableBody>
                         {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {  
                             return (  
-                                <StyledTableRow key={row.name}>
+                                <StyledTableRow key={row.patientId}>
                                 <TableCell component="th" scope="row">
                                     {row.patientId}
                                 </TableCell>
                             <TableCell align="center">{row.firstName} {' '} {row.username}</TableCell>
-                                <TableCell align="center">{row.name}</TableCell>
-                                <TableCell align="center">{row.name}</TableCell>
+                                <TableCell align="center">{row.dateEncounter}</TableCell>
+                                <TableCell align="center">1</TableCell>
                                 <TableCell align="center">
                                         
                                         <Typography variant="caption" className="text-primary"   display="block"  gutterBottom>

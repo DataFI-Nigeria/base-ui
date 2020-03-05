@@ -4,42 +4,75 @@ import {
     Col,
     Row,
     FormGroup,
-    Button,
+
   } from 'reactstrap';
 import {
 MdSearch
 } from 'react-icons/md';
-import DateMaterial from 'components/DateTime/Date'
+import 'react-widgets/dist/css/react-widgets.css';
+//Date Picker
+import { DateTimePicker } from 'react-widgets';
+import Moment from 'moment';
+import momentLocalizer from 'react-widgets-moment';
+
+import MatButton from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+
+Moment.locale('en');
+momentLocalizer();
+
+const useStyles = makeStyles(theme => ({
+    root: {
+      '& > *': {
+        margin: theme.spacing(1),
+      },
+    },
+  }));
 
 const SearchInput = () => {
+    const classes = useStyles();
   return (
         <Form>
         <Row form >
-            <Col md={3} >
-                <FormGroup>
-                        <DateMaterial />
-                </FormGroup>            
-            </Col>
-            <Col md={3}>
-                <FormGroup>
-                    <DateMaterial />
-                </FormGroup>
-            </Col>
-            <Col md={4} style={{ marginTop: '33px'}}>
-                <Input
-                    type="search"
-                    placeholder="Search by Patient Name, Hospital No. "
-                    className="cr-search-form__input pull-right"
-                />                          
-            </Col>
-            <Col md={2} style={{ marginTop: '33px'}}>
-            <FormGroup>
-            <Button color="primary" className=" float-right mr-1" >
-                    <MdSearch/>  Filter Result
-            </Button>
-            </FormGroup>
-            </Col>
-        </Row>
+
+                                <Col md={2} style={{ marginTop: '20px'}}>
+                                    <DateTimePicker time={false} name="dateRegistration"  id="dateRegistration"  
+                                    defaultValue={new Date()} max={new Date()}
+                                    />                             
+                                </Col>
+                                
+                                <Col md={2} style={{ marginTop: '20px'}}>
+                                    <DateTimePicker time={false} name="dateRegistration"  id="dateRegistration"  
+                                    defaultValue={new Date()} max={new Date()}
+                                    />                             
+                                </Col>
+                                <Col md={6} style={{ marginTop: '20px'}}>
+                                        <Input
+                                            type="search"
+                                            placeholder="Lab. Number, Patient ID, Hosiptal Number"
+                                            className="cr-search-form__input "
+                                            name="lab_number"
+                                            id="lab_number"
+                                           
+                                        />                                
+                                </Col>
+                               
+                                <Col md={2} style={{ marginTop: '20px'}}>
+                                <FormGroup>
+                                    
+                                    <MatButton  
+                                        type="submit" 
+                                        variant="contained"
+                                        color="primary"
+                                        className={classes.button}
+                                        startIcon={<MdSearch />}
+                                    >
+                                        Search
+                                    </MatButton>
+                                </FormGroup>
+
+                                </Col>
+                            </Row>
         </Form>
 
   );

@@ -151,13 +151,13 @@ export default function VitalsSigns(props) {
                             ---
                             </TableCell>
                             <TableCell align="center">
-                                <Tooltip title="View Patient Vitals">
+                                {/* <Tooltip title="View Patient Vitals">
                                     <Link to="/view-vitals">
                                         <IconButton aria-label="Collect Sample">
                                             <IoMdEye size={20}/>
                                         </IconButton>
                                     </Link>
-                                </Tooltip>
+                                </Tooltip> */}
                                 <Tooltip title="Add Vitals">
                                         <IconButton aria-label="Collect Sample">
                                             <MdAddBox size={20} 

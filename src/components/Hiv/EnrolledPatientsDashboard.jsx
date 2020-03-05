@@ -31,6 +31,7 @@ import Consultation from './consulatation/consultation';
 import PatientDetailCard from 'components/Functions/PatientDetailCard';
 import TestOrder from './TestOrder/TestOrder';
 import Medication from './Medication/Medication';
+import ServiceForm from './ServiceForm/serviceForm';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -260,87 +261,7 @@ export default function ScrollableTabsButtonForce(props) {
                         </CardContent>                      
                     </Card>
                 </Grid>
-                {/* <Grid item xs='6' >              
-                    
-                    <Card className={classes.cardroot} style={cardHeight}>
-                        <CardContent>  
-                            <LaboratoryPharmacyHistory />
-                        </CardContent>                      
-                    </Card>                          
-                </Grid> */}
-                {/* <Grid item xs='6'>               
-                    <Card className={classes.cardroot} style={cardHeight}>
-                        <CardContent>
-                            <Typography className={classes.title} color="primary" gutterBottom>
-                            Forms
-                            </Typography>
-                                <Grid container spacing={12}>
-                                    <Grid item xs='12'>
-                                        <Typography className={classes.pos} color="textSecondary" >
-                                                Tobaclusis       20/01/2020
-                                        </Typography>
-                                        <Typography className={classes.pos} color="textSecondary" >
-                                                Tobaclusis       20/01/2020
-                                        </Typography>
-                                    </Grid>
-                                    
-                                </Grid>                               
-                        </CardContent>                      
-                    </Card>
-                </Grid> */}
-               {/* <Grid item xs='6' >
-                    <Card className={classes.cardroot} style={cardHeight}>
-                        <CardContent>
-                            <Typography className={classes.title} color="primary" gutterBottom>
-                                Relatioship
-                                <Link to="/enrolled-patients">
-                                    <Button color="primary" className=" float-right mr-1" >
-                                            <FaPlusCircle/>  {' '} ADD
-                                    </Button>
-                                </Link>
-                            </Typography>
-                                <Grid container spacing={12}>
-                                    <Grid item xs='12'>
-                                        <Typography className={classes.pos} color="textSecondary" >
-                                        <Card className={classes.cardroot} >
-                                        <CardContent>
-                                            <List component="nav" className={classes.root} aria-label="contacts">
-                                            <ListItem button>
-                                                
-                                                <ListItemText primary="Chelsea Otakan" />
-                                            </ListItem>
-                                            <ListItem button>
-                                                <ListItemText  primary="Eric Hoffman" />
-                                            </ListItem>
-                                            </List>
-                                        </CardContent>
-                                        </Card>     
-                                        </Typography>
-                                    </Grid>                               
-                                </Grid>                               
-                        </CardContent>                      
-                    </Card>
-                </Grid> */}
-                {/* <Grid item xs='6'>               
-                    <Card className={classes.cardroot} style={cardHeight}>
-                        <CardContent>
-                            <Typography className={classes.title} color="primary" gutterBottom>
-                                Active Programs
-                            </Typography>
-                                <Grid container spacing={12}>
-                                    <Grid item xs='12'>
-                                        <Typography className={classes.pos} color="textSecondary" >
-                                                Tobaclusis       20/01/2020
-                                        </Typography>
-                                        <Typography className={classes.pos} color="textSecondary" >
-                                                Tobaclusis       20/01/2020
-                                        </Typography>
-                                    </Grid>
-                                    
-                                </Grid>                               
-                        </CardContent>                      
-                    </Card>
-                </Grid> */}
+                
                 
             </Grid> 
 
@@ -357,7 +278,7 @@ export default function ScrollableTabsButtonForce(props) {
  <TabPanel value={value} index={2}>
       <Grid container spacing={2}>
                 <Grid item xs='12'> 
-
+                <ServiceForm getpatientdetails={props.location.state } height={cardHeight}/>
                 </Grid>
         </Grid>
 </TabPanel>

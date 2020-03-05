@@ -25,7 +25,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import ResultSearch from 'components/Laboratory/SearchForm/ResultSearch';
 
 import axios from 'axios';
-import {url} from 'axios/url';
+//import {url} from 'axios/url';
   
 
 const useStyles = makeStyles({  
@@ -58,7 +58,7 @@ const CheckInPage = (props) => {
   const [page, setPage] = React.useState(0);  
   const [data, setData] = useState([]);   
   const [rowsPerPage, setRowsPerPage] = React.useState(5);  
-  const apistate = url+"patients";
+  const apistate = "https://jsonplaceholder.typicode.com/users";
       useEffect(() => {    
         const GetData = async () => {    
           const result = await axios(apistate);    
@@ -129,10 +129,10 @@ const CheckInPage = (props) => {
                                     <TableCell component="th" scope="row">
                                         {row.name}
                                     </TableCell>
-                                    <TableCell align="center">{row.calories}</TableCell>
-                                    <TableCell align="center">{row.fat}</TableCell>
+                                    <TableCell align="center">{row.name}</TableCell>
+                                    <TableCell align="center">{row.username}</TableCell>
                                     <TableCell align="center">12/02/2020</TableCell>
-                                    <TableCell align="center">{row.carbs}</TableCell>
+                                    <TableCell align="center">{row.name}</TableCell>
                                     <TableCell align="center">2</TableCell>
                                     <TableCell align="center">
                                         <Link to="/view-result">

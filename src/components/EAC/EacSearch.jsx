@@ -58,7 +58,17 @@ const PendingPrescription = (props) => {
     const toggle = () => setModal(!modal);
     const toggle2 = () => setModal2(!modal2);
     return (
-        <Page title="Index Contact Tracking" >
+        <Page title="Enchanced Adherence Counseling" >
+            <Row>
+                <Col xl={12} lg={12} md={12}>
+                    <Alert color="primary">
+                        <TiWarningOutline
+                            size="30"
+                            className=" text-dark"/>  { '  '}
+                        Note : Only  HIV Positive Patients can be search here
+                    </Alert>
+                </Col>
+            </Row>
             <Row>
                 <Col sm="12">
                     <Card body>
@@ -71,12 +81,12 @@ const PendingPrescription = (props) => {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>Patient ID</TableCell>
-                                        <TableCell align="center">Client ID</TableCell>
-                                        <TableCell align="center">Client Nmae</TableCell>
+                                        <TableCell align="center">Patient Name</TableCell>
                                         <TableCell align="center">Gender</TableCell>
-                                        <TableCell align="center">Date Enrolled</TableCell>
-                                        <TableCell align="center">Total Index Contact</TableCell>
-                                        <TableCell align="center">Total Contacted</TableCell>
+                                        <TableCell align="center">Date of 1st EAC</TableCell>
+                                        <TableCell align="center">Date of 2nd EAC</TableCell>
+                                        <TableCell align="center">Date of 3rd EAC</TableCell>
+                                        <TableCell align="center">Date of Repeact VL</TableCell>
                                         <TableCell align="center">Action</TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -94,39 +104,54 @@ const PendingPrescription = (props) => {
                                             <TableCell align="center">{row.gender}</TableCell>
                                             <TableCell align="center">
                                                 <Tooltip title="Enroll Patient">
-                                                    <Link to="/new-index">
                                                     <IconButton aria-label="Collect Sample">
-                                                        <AddCircleOutlineIcon size={20} />
+                                                        <AddCircleOutlineIcon size={20} onClick={toggle2}/>
                                                     </IconButton>
-                                                    </Link>
                                                 </Tooltip>
-                                                <Tooltip title="View Patient">
+                                                <Tooltip title="View EAC">
+                                                    <Link to="/view-eac">
                                                         <IconButton aria-label="Collect Sample">
                                                             <ViewListIcon size={20}/>
                                                         </IconButton>
+                                                    </Link>
                                                 </Tooltip>
                                             </TableCell>
                                         </TableRow>
                                     ))}
-                                    <Modal isOpen={modal2} toggle={toggle2}>
-                                        <ModalHeader toggle={toggle2}>Enroll Client Into HIV Program</ModalHeader>
+                                    <Modal isOpen={modal2} toggle={toggle2} size='lg'>
+                                        <ModalHeader toggle={toggle2}>Add New EAC</ModalHeader>
                                         <ModalBody>
-                                            <Alert color="primary">
-                                                To Enroll client, enter client's patient ID. To get a Patient ID, go to patient registration.
-                                            </Alert>
                                             <Row>
-                                                <Col md={12}>
+                                                <Col md={6}>
                                                     <FormGroup>
-                                                        <Label for="hospitalNumber">Patient Id</Label>
-                                                        <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="Patient ID " />
+                                                        <Label for="hospitalNumber">Date Of 1st EAC</Label>
+                                                        <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="First EAC" />
+                                                    </FormGroup>
+                                                </Col>
+                                                <Col md={6}>
+                                                    <FormGroup>
+                                                        <Label for="hospitalNumber">Date Of 2nd EAC</Label>
+                                                        <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="Second EAC" />
+                                                    </FormGroup>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col md={6}>
+                                                    <FormGroup>
+                                                        <Label for="hospitalNumber">Date Of 3rd EAC</Label>
+                                                        <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="Third EAC" />
+                                                    </FormGroup>
+                                                </Col>
+                                                <Col md={6}>
+                                                    <FormGroup>
+                                                        <Label for="hospitalNumber">Date Of Repeact VL</Label>
+                                                        <Input type="text" name="hospitalNumber" id="hospitalNumber" placeholder="Repeat VL" />
                                                     </FormGroup>
                                                 </Col>
                                             </Row>
                                         </ModalBody>
                                         <ModalFooter>
-                                            <Link to="/enroll-patient">
-                                                <Button color="primary" onClick={toggle2}>Enroll</Button>
-                                            </Link>
+                                                <Button color="primary" onClick={toggle2}>Save</Button>
                                             <Button color="secondary" onClick={toggle2}>Close</Button>
                                         </ModalFooter>
                                     </Modal>

@@ -37,7 +37,7 @@ const ConsultationPage = () => {
             </Alert>
         <Card className={classes.cardBottom}>  
             <CardContent>
-                <Title >Basic Information
+                <Title >Basic Information2
                 </Title> 
                 <br/>
                 {/* Search Form Input Field */}

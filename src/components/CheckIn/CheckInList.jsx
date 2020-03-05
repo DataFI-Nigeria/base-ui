@@ -130,10 +130,12 @@ const getUsermodal = (patientrow)=> {
                 };  
     console.log(data);          
     axios.post(apiUrl, data)
-        .then((result) => {          
+        .then((result) => {
+          toast.success("Patient Checked In was Successful!");  
+          setModal(!modal);        
           setShowLoading(false);
-          props.history.push('/checkedin-patients')
-          toast.success("Patient Checked In was Successful!");
+          props.history.push('/checkin')
+          
           console.log(result);
         }).catch((error) => {
             console.log(error);
@@ -202,18 +204,12 @@ const getUsermodal = (patientrow)=> {
                 </TableCell>  
               <TableCell align="right">{row.firstName} {' '} {row.lastName}</TableCell>  
 
-                <TableCell align="right">{row.mobilePhoneNumber}</TableCell>  
+                <TableCell align="right">+2347045678790</TableCell>  
 
                 <TableCell align="right">{row.dob}</TableCell>  
 
                 <TableCell align="right">
-                    <Tooltip title="Patient Dashboard">
-                        <Link to="/data-table1">
-                            <IconButton aria-label="Patient Dashboard">
-                                <MdDashboard size={20}/>
-                            </IconButton>
-                        </Link>
-                    </Tooltip>
+                   
                     <Tooltip title="check in Patient">
                         <IconButton aria-label="check in Patient" 
                             onClick={() => {
@@ -223,11 +219,11 @@ const getUsermodal = (patientrow)=> {
                             < FaUserCheck size={20} />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Closed Checked In Patient">
+                    {/* <Tooltip title="Closed Checked In Patient">
                         <IconButton aria-label="Closed Checked In Patient">
                             < MdCancel size={20} onClick={toggle}/>
                         </IconButton>
-                    </Tooltip>
+                    </Tooltip> */}
                 </TableCell>  
  
 
@@ -240,6 +236,7 @@ const getUsermodal = (patientrow)=> {
 
           </TableBody>  
         </Table>  
+            
             {/* The checkedin modal  */}
             <Modal isOpen={modal} toggle={toggle} size="lg">
             <Form onSubmit={saveCheckedin}>

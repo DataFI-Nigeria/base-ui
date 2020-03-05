@@ -35,6 +35,14 @@ import {
     FaPlusSquare,
     FaTimesCircle
 } from 'react-icons/fa';
+import { DateTimePicker } from 'react-widgets';
+import Moment from 'moment';
+import momentLocalizer from 'react-widgets-moment';
+import 'react-widgets/dist/css/react-widgets.css';
+
+Moment.locale('en');
+momentLocalizer();
+
 
 
 
@@ -109,7 +117,10 @@ export default function Appointment(props){
   const toggle = () => setModal(!modal);
   const toggle2 = () => setModal2(!modal2);
   const toggle3 = () => setModal3(!modal3);
-      
+  const textstyle = {
+    fontSize: '14px',
+    fontWeight: 'bolder'
+  };  
   return (
     <Page title="Lab. Test Result">
        <Row >
@@ -183,18 +194,18 @@ export default function Appointment(props){
                                             <TableCell align="center">
                                                 <Tooltip title="View Collected Sample">
                                                 
-                                                    <IconButton aria-label="View Collected Sample">
-                                                    <FaTh size="15" onClick={toggle}/>
+                                                    <IconButton aria-label="View Collected Sample" onClick={toggle}>
+                                                    <FaTh size="15" />
                                                     </IconButton>
                                                 </Tooltip>
                                                 <Tooltip title="Enter Result">
-                                                    <IconButton aria-label="Enter Result">
-                                                    <FaPlusSquare size="15" onClick={toggle2}/>
+                                                    <IconButton aria-label="Enter Result" onClick={toggle2}>
+                                                    <FaPlusSquare size="15" />
                                                     </IconButton>
                                                 </Tooltip>
                                                 <Tooltip title="Rejected Result">
-                                                    <IconButton aria-label="Rejected Result">
-                                                    <FaTimesCircle size="15" onClick={toggle3}/>
+                                                    <IconButton aria-label="Rejected Result" onClick={toggle3}>
+                                                    <FaTimesCircle size="15" />
                                                     </IconButton>
                                                 </Tooltip>
                                             </TableCell>
@@ -215,11 +226,74 @@ export default function Appointment(props){
               <Modal isOpen={modal} toggle={toggle} className={className} size='lg'>
                 <ModalHeader toggle={toggle}>View Test Detail</ModalHeader>
                 <ModalBody>
-                    <Row >
-                        <Col xs="4">Test </Col>
-                        <Col xs="4">Sample Test</Col>
-                        <Col xs="4">Sample collected</Col>
+                    <Row style={{ marginTop: '20px'}}>
+                        <Col xs="4">
+                          Test 
+                          <br/>
+                          <p style={textstyle}>Haemoglobin </p>
+
+                        
+                        </Col>
+                        <Col xs="4">
+                          Sample Test
+                          <br/>
+                          <p style={textstyle}>Blood</p>
+                          
+                          </Col>
+                        <Col xs="4">
+                          Date Of Result
+                          <br/>
+                          <p style={textstyle}>2020/03/03<small className="text-muted">By Umar</small></p>
+                          </Col>
                        
+                    </Row >
+                    <Row style={{ marginTop: '20px'}}>
+                        <Col xs="4">
+                          Result 
+                          <br/>
+                          <p style={textstyle}>3</p>
+
+                        
+                        </Col>
+                        <Col xs="4">
+                          Unit
+                          <br/>
+                          <p style={textstyle}>mm/hl</p>
+                          
+                          </Col>
+                        <Col xs="4">
+                          Sample collected
+                          <br/>
+                          <p style={textstyle}>020/03/03<small className="text-muted">By Evans</small></p>
+                          </Col>
+                       
+                    </Row>
+                    <Row style={{ marginTop: '20px'}}>
+                        <Col xs="4">
+                          File
+                          <br/>
+                         <p style={textstyle}>Click to view File</p> 
+
+                        
+                        </Col>
+                        <Col xs="4">
+                          Status
+                          <br/>
+                          <p style={textstyle}>Refeered - Out</p>
+                          
+                          </Col>
+                        
+                       
+                    </Row>
+                    <Row style={{ marginTop: '20px'}}>
+                        <Col xs="12">
+                          Note
+                          <br/>
+                          <p style={textstyle}>Nile</p>
+
+                        
+                        </Col>
+                        
                     </Row>
                 </ModalBody>
                 <ModalFooter>
@@ -231,35 +305,83 @@ export default function Appointment(props){
                 <Modal isOpen={modal2} toggle={toggle2} className={className} size='lg'>
                     <ModalHeader toggle={toggle2}>Enter Test Detail</ModalHeader>
                     <ModalBody>
-                        <Row >
-                            <Col xs="4">Test </Col>
-                            <Col xs="4">Sample Test</Col>
-                            <Col xs="4">Sample collected</Col>
+                    <Row style={{ marginTop: '20px'}}>
+                        <Col xs="4">
+                          Test 
+                          <br/>
+                          <p style={textstyle}>Haemoglobin </p>
+
                         
-                        </Row>
-                        <br/>
-                        <Form>
-                        <Row form>
-                            <Col md={4}>
-                            <FormGroup>
+                        </Col>
+                        <Col xs="4">
+                          Sample Test
+                          <br/>
+                          <p style={textstyle}>Blood</p>
+                          
+                          </Col>
+                        <Col xs="4">
+                          Date Of Result
+                          <br/>
+                          <DateTimePicker time={false} name="dateRegistration"  id="dateRegistration"  
+                            defaultValue={new Date()} max={new Date()}
+                            />            
+                          </Col>
+                       
+                    </Row >
+                    <Row style={{ marginTop: '20px'}}>
+                        <Col xs="4">
+                         
+                          <FormGroup>
                                 <Label for="exampleEmail">Result</Label>
                                 <Input type="email" name="email" id="exampleEmail" placeholder="with a placeholder" />
                             </FormGroup>
-                            </Col>
-                            <Col md={4}>
-                            <FormGroup>
-                                <Label for="examplePassword">Result Recieved </Label>
-                                <Input type="text" name="text"  placeholder="Result Recieved" />
-                            </FormGroup>
-                            </Col>
-                            <Col md={4}>
-                            <FormGroup>
+                        </Col>
+                        <Col xs="4">
+                          Unit
+                          <br/>
+                          <p style={textstyle}>mm/hl</p>
+                          
+                          </Col>
+                        <Col xs="4">
+                          Sample collected
+                          <br/>
+                          <p style={textstyle}>020/03/03<small className="text-muted">By Evans</small></p>
+                          </Col>
+                       
+                    </Row>
+                    <Row style={{ marginTop: '20px'}}>
+                        <Col xs="4">
+                         
+                          <FormGroup>
                                 <Label for="examplePassword">File</Label>
-                                <Input type="file" name="password"  placeholder="file upload" />
+                                <Input type="file" name="file"  placeholder="file upload" />
                             </FormGroup>
-                            </Col>
-                        </Row>       
-                        </Form>
+                        
+                        </Col>
+                        <Col xs="4">
+                          Date Asseyed
+                          <br/>
+                          <DateTimePicker time={false} name="dateRegistration"  id="dateRegistration"  
+                            defaultValue={new Date()} max={new Date()}
+                            /> 
+                          
+                          </Col>
+                        
+                       
+                    </Row>
+                    <Row style={{ marginTop: '20px'}}>
+                        <Col xs="12">
+                         
+                          <FormGroup>
+                                <Label for="examplePassword">Enter Note here</Label>
+                                <Input type="text" name="password"  placeholder="Note" />
+                            </FormGroup>
+
+                        
+                        </Col>
+                        
+                    </Row>
+                       
                     </ModalBody>
                     <ModalFooter>
                     <Button color="primary" onClick={toggle2}>Save</Button>{' '}
@@ -270,33 +392,50 @@ export default function Appointment(props){
                 <Modal isOpen={modal3} toggle={toggle3} className={className} size='lg'>
                     <ModalHeader toggle={toggle3}>Reject Sample </ModalHeader>
                     <ModalBody>
-                        <Row >
-                            <Col xs="4">Test </Col>
-                            <Col xs="4">Sample Test</Col>
-                            <Col xs="4">Sample collected</Col>
+                    <Row style={{ marginTop: '20px'}}>
+                        <Col xs="4">
+                          Test 
+                          <br/>
+                          <p style={textstyle}>Haemoglobin </p>
+
                         
-                        </Row>
+                        </Col>
+                        <Col xs="4">
+                          Sample Test
+                          <br/>
+                          <p style={textstyle}>Blood</p>
+                          
+                          </Col>
+                        <Col xs="4">
+                          Date Of Result
+                          <br/>
+                          <DateTimePicker time={false} name="dateRegistration"  id="dateRegistration"  
+                            defaultValue={new Date()} max={new Date()}
+                            />            
+                          </Col>
+                       
+                    </Row >
                         <br/>
                         <Form>
                         <Row form>
                             <Col md={4}>
                             <FormGroup>
-                                <Label for="exampleEmail">Result</Label>
-                                <Input type="text" name="result" id="result" placeholder="Result" />
+                                <Label for="exampleEmail">Reason For Rejection</Label>
+                                <Input type="select" name="select" id="exampleSelect">
+                                    <option>Not well collected</option>
+                                    <option>Mistake on the sample</option>
+                                    <option>Not needed</option>
+                                   
+                                  </Input>
                             </FormGroup>
                             </Col>
-                            <Col md={4}>
+                            <Col md={12}>
                             <FormGroup>
-                                <Label for="examplePassword">Result Recieved </Label>
+                                <Label for="examplePassword">Note</Label>
                                 <Input type="text" name="result-received" id="result" placeholder="Result Recieved" />
                             </FormGroup>
                             </Col>
-                            <Col md={4}>
-                            <FormGroup>
-                                <Label for="examplePassword">File</Label>
-                                <Input type="file" name="file"  placeholder="file upload" />
-                            </FormGroup>
-                            </Col>
+                            
                         </Row>       
                         </Form>
                     </ModalBody>
